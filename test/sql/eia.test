@@ -1,0 +1,161 @@
+# EIA discovery, typed observations, pagination, legacy series and upstream authentication.
+require vgi
+
+require-env EIA_WORKER
+
+statement ok
+LOAD json;
+
+statement ok
+ATTACH 'eia' (TYPE vgi, LOCATION '{EIA_WORKER}');
+
+statement error
+SELECT count(*) FROM eia.main.routes();
+----
+EIA_API_KEY
+
+statement ok
+CREATE SECRET eia_fixture (TYPE eia_api, API_KEY 'fixture-eia-key-with-40-characters-00000000');
+
+# root routes
+query T
+SELECT route FROM eia.main.routes();
+----
+electricity
+
+# child routes
+query T
+SELECT route FROM eia.main.routes(route := 'electricity');
+----
+electricity/retail-sales
+
+# leaf routes
+query T
+SELECT count(*) FROM eia.main.routes(route := 'electricity/retail-sales');
+----
+0
+
+# metadata
+query TTT
+SELECT name, start_period, end_period FROM eia.main.metadata('electricity/retail-sales');
+----
+Electricity Retail Sales	2024-01	2024-05
+
+# frequencies
+query T
+SELECT frequency FROM eia.main.frequencies('electricity/retail-sales') ORDER BY frequency;
+----
+annual
+monthly
+
+# measures
+query T
+SELECT measure FROM eia.main.measures('electricity/retail-sales') ORDER BY measure;
+----
+price
+sales
+
+# facets
+query T
+SELECT facet FROM eia.main.facets('electricity/retail-sales') ORDER BY facet;
+----
+sectorid
+stateid
+
+# facet values preserve zeroes
+query T
+SELECT id FROM eia.main.facet_values('electricity/retail-sales', 'stateid') ORDER BY id;
+----
+01
+CO
+
+# multi-page observations
+query TTT
+SELECT count(*), count(value), sum(value) FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', page_size := 2);
+----
+5	2	23.0
+
+# native periods and missing markers
+query TTT
+SELECT period, value_text, value_status FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', page_size := 2) ORDER BY period;
+----
+2024-01	10.25	numeric
+2024-02	null	missing
+2024-03	w	withheld
+2024-04	*	insignificant
+2024-05	12.75	numeric
+
+# units and dimensions
+query TT
+SELECT units, json_extract_string(dimensions_json, '$.stateid') FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', max_rows := 1);
+----
+cents per kilowatthour	CO
+
+# cap across pages
+query TT
+SELECT count(*), max(period) FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', page_size := 2, max_rows := 3);
+----
+3	2024-03
+
+# filtered empty
+query T
+SELECT count(*) FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{"stateid":["01"]}');
+----
+0
+
+# offset and sorting
+query T
+SELECT period FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', start_period := '2024-02', end_period := '2024-04', start_offset := 1, sort_direction := 'desc', page_size := 1);
+----
+2024-03
+2024-02
+
+# legacy numeric representation
+query TTT
+SELECT period, value, measure FROM eia.main.series('ELEC.SALES.CO-RES.A', start_period := '2022', end_period := '2024', page_size := 1) ORDER BY period;
+----
+2022	12.75	sales
+2023	13.0	sales
+2024	14.5	sales
+
+# invalid route
+statement error
+SELECT * FROM eia.main.metadata('https://example.com');
+----
+relative EIA metadata
+
+# unknown measure
+statement error
+SELECT * FROM eia.main.observations('electricity/retail-sales', 'bad', 'monthly');
+----
+measure is not advertised
+
+# unknown frequency
+statement error
+SELECT * FROM eia.main.observations('electricity/retail-sales', 'price', 'hourly');
+----
+frequency is not advertised
+
+# unknown facet
+statement error
+SELECT * FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{"unknown":["x"]}');
+----
+dimensions not advertised
+
+# duplicate facets
+statement error
+SELECT * FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{"stateid":["CO","CO"]}');
+----
+unique string arrays
+
+# reversed bounds
+statement error
+SELECT * FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', start_period := '2025', end_period := '2024');
+----
+must not be after
+
+statement ok
+DROP SECRET eia_fixture;
+
+statement ok
+DETACH eia;

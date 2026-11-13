@@ -1,29 +1,21 @@
-"""Assemble the functions into a catalog and run the worker.
+"""Serve the Energy Information Administration catalog over stdio, Unix sockets or HTTP.
 
-To add a function: write it (see ``greet.py`` / ``sequence.py`` /
-``fetch_items.py``), then add the class to ``FUNCTIONS`` below.
-
-Run it:
-
-    vgi-starter-worker                      # stdio: what DuckDB launches by default
-    vgi-starter-worker --http --port 8000   # HTTP: for Docker / hosted deploys
-    vgi-starter-worker --help
-
-Attach it from DuckDB:
-
-    ATTACH 'starter' (TYPE vgi, LOCATION '/abs/path/to/.venv/bin/vgi-starter-worker');
+Register new endpoints in functions.FUNCTIONS. Diagnostics use stderr; stdout
+belongs exclusively to the VGI protocol when running over stdio.
 """
 
 from __future__ import annotations
 
 import json
+import sys
 from typing import Any
 
 from vgi import Worker
 from vgi.catalog import Catalog, Schema
 
-from .fetch_items import API_SECRET_TYPE, FetchItems
-from .greet import Greet, GreetWithStyle
+from .api import API_SECRET_TYPES
+from .auth import validate_http_auth
+from .functions import FUNCTIONS
 from .meta import (
     CATALOG_DOC_MD,
     CATALOG_NAME,
@@ -34,9 +26,6 @@ from .meta import (
     SOURCE_URL,
     keywords_array,
 )
-from .sequence import SequenceTable
-
-FUNCTIONS: list[type[Any]] = [Greet, GreetWithStyle, SequenceTable, FetchItems]
 
 
 def _stamp_example_queries(functions: list[type[Any]]) -> list[dict[str, str]]:
@@ -58,9 +47,19 @@ def _stamp_example_queries(functions: list[type[Any]]) -> list[dict[str, str]]:
 
 
 _ALL_EXAMPLES = _stamp_example_queries(FUNCTIONS)
+CATALOG_TAGS["vgi.agent_test_tasks"] = json.dumps(
+    [
+        {
+            "name": fn.Meta.name,
+            "prompt": f"Using eia.main.{fn.Meta.name}, {fn.Meta.examples[0].description.lower()}. "
+            f"Use the arguments in this example and return the same columns: {fn.Meta.examples[0].sql}",
+        }
+        for fn in FUNCTIONS
+    ]
+)
 
 
-class StarterWorker(Worker):
+class EiaWorker(Worker):
     """The worker process: one catalog, one ``main`` schema."""
 
     catalog = Catalog(
@@ -74,9 +73,9 @@ class StarterWorker(Worker):
                 comment=SCHEMA_DOC_MD,
                 functions=FUNCTIONS,
                 tags={
-                    "vgi.title": "Starter Functions",
-                    "domain": "examples",
-                    "vgi.keywords": keywords_array("greeting, sequence, generator, rest api, pagination"),
+                    "vgi.title": "Eia Functions",
+                    "domain": "economics",
+                    "vgi.keywords": keywords_array("eia, energy, electricity, petroleum, natural gas, time series"),
                     "vgi.doc_llm": SCHEMA_DOC_LLM,
                     "vgi.doc_md": SCHEMA_DOC_MD,
                     "vgi.categories": json.dumps(SCHEMA_CATEGORIES),
@@ -86,12 +85,17 @@ class StarterWorker(Worker):
         ],
     )
 
-    secret_types = [API_SECRET_TYPE]
+    secret_types = API_SECRET_TYPES
 
 
 def main() -> None:
     """Console-script entry point: parse ``--http`` / ``--unix`` / logging flags and serve."""
-    StarterWorker.main()
+    if "--http" in sys.argv[1:]:
+        try:
+            validate_http_auth()
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from None
+    EiaWorker.main()
 
 
 if __name__ == "__main__":

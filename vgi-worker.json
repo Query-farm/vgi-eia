@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "catalog": "eia",
+  "worker": [
+    ".venv/bin/vgi-eia-worker"
+  ],
+  "api_base_url": "https://api.eia.gov/v2",
+  "secret_type": "eia_api",
+  "key_required": true,
+  "credential_check_sql": "SELECT count(*) FROM eia.main.routes()",
+  "checks": [
+    {
+      "name": "root routes",
+      "sql": "SELECT route FROM eia.main.routes()",
+      "rows": [
+        [
+          "electricity"
+        ]
+      ]
+    },
+    {
+      "name": "child routes",
+      "sql": "SELECT route FROM eia.main.routes(route := 'electricity')",
+      "rows": [
+        [
+          "electricity/retail-sales"
+        ]
+      ]
+    },
+    {
+      "name": "leaf routes",
+      "sql": "SELECT count(*) FROM eia.main.routes(route := 'electricity/retail-sales')",
+      "rows": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "name": "metadata",
+      "sql": "SELECT name, start_period, end_period FROM eia.main.metadata('electricity/retail-sales')",
+      "rows": [
+        [
+          "Electricity Retail Sales",
+          "2024-01",
+          "2024-05"
+        ]
+      ]
+    },
+    {
+      "name": "frequencies",
+      "sql": "SELECT frequency FROM eia.main.frequencies('electricity/retail-sales') ORDER BY frequency",
+      "rows": [
+        [
+          "annual"
+        ],
+        [
+          "monthly"
+        ]
+      ]
+    },
+    {
+      "name": "measures",
+      "sql": "SELECT measure FROM eia.main.measures('electricity/retail-sales') ORDER BY measure",
+      "rows": [
+        [
+          "price"
+        ],
+        [
+          "sales"
+        ]
+      ]
+    },
+    {
+      "name": "facets",
+      "sql": "SELECT facet FROM eia.main.facets('electricity/retail-sales') ORDER BY facet",
+      "rows": [
+        [
+          "sectorid"
+        ],
+        [
+          "stateid"
+        ]
+      ]
+    },
+    {
+      "name": "facet values preserve zeroes",
+      "sql": "SELECT id FROM eia.main.facet_values('electricity/retail-sales', 'stateid') ORDER BY id",
+      "rows": [
+        [
+          "01"
+        ],
+        [
+          "CO"
+        ]
+      ]
+    },
+    {
+      "name": "multi-page observations",
+      "sql": "SELECT count(*), count(value), sum(value) FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', page_size := 2)",
+      "rows": [
+        [
+          5,
+          2,
+          23.0
+        ]
+      ]
+    },
+    {
+      "name": "native periods and missing markers",
+      "sql": "SELECT period, value_text, value_status FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', page_size := 2) ORDER BY period",
+      "rows": [
+        [
+          "2024-01",
+          "10.25",
+          "numeric"
+        ],
+        [
+          "2024-02",
+          "null",
+          "missing"
+        ],
+        [
+          "2024-03",
+          "w",
+          "withheld"
+        ],
+        [
+          "2024-04",
+          "*",
+          "insignificant"
+        ],
+        [
+          "2024-05",
+          "12.75",
+          "numeric"
+        ]
+      ]
+    },
+    {
+      "name": "units and dimensions",
+      "sql": "SELECT units, json_extract_string(dimensions_json, '$.stateid') FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', max_rows := 1)",
+      "rows": [
+        [
+          "cents per kilowatthour",
+          "CO"
+        ]
+      ]
+    },
+    {
+      "name": "cap across pages",
+      "sql": "SELECT count(*), max(period) FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', page_size := 2, max_rows := 3)",
+      "rows": [
+        [
+          3,
+          "2024-03"
+        ]
+      ]
+    },
+    {
+      "name": "filtered empty",
+      "sql": "SELECT count(*) FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{\"stateid\":[\"01\"]}')",
+      "rows": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "name": "offset and sorting",
+      "sql": "SELECT period FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', start_period := '2024-02', end_period := '2024-04', start_offset := 1, sort_direction := 'desc', page_size := 1)",
+      "rows": [
+        [
+          "2024-03"
+        ],
+        [
+          "2024-02"
+        ]
+      ]
+    },
+    {
+      "name": "legacy numeric representation",
+      "sql": "SELECT period, value, measure FROM eia.main.series('ELEC.SALES.CO-RES.A', start_period := '2022', end_period := '2024', page_size := 1) ORDER BY period",
+      "rows": [
+        [
+          "2022",
+          12.75,
+          "sales"
+        ],
+        [
+          "2023",
+          13.0,
+          "sales"
+        ],
+        [
+          "2024",
+          14.5,
+          "sales"
+        ]
+      ]
+    }
+  ],
+  "error_checks": [
+    {
+      "name": "invalid route",
+      "sql": "SELECT * FROM eia.main.metadata('https://example.com')",
+      "message": "relative EIA metadata"
+    },
+    {
+      "name": "unknown measure",
+      "sql": "SELECT * FROM eia.main.observations('electricity/retail-sales', 'bad', 'monthly')",
+      "message": "measure is not advertised"
+    },
+    {
+      "name": "unknown frequency",
+      "sql": "SELECT * FROM eia.main.observations('electricity/retail-sales', 'price', 'hourly')",
+      "message": "frequency is not advertised"
+    },
+    {
+      "name": "unknown facet",
+      "sql": "SELECT * FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{\"unknown\":[\"x\"]}')",
+      "message": "dimensions not advertised"
+    },
+    {
+      "name": "duplicate facets",
+      "sql": "SELECT * FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{\"stateid\":[\"CO\",\"CO\"]}')",
+      "message": "unique string arrays"
+    },
+    {
+      "name": "reversed bounds",
+      "sql": "SELECT * FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', start_period := '2025', end_period := '2024')",
+      "message": "must not be after"
+    }
+  ],
+  "live_checks": [
+    {
+      "name": "live routes",
+      "sql": "SELECT count(*) > 0 FROM eia.main.routes(route := 'electricity')",
+      "rows": [
+        [
+          true
+        ]
+      ]
+    },
+    {
+      "name": "live metadata",
+      "sql": "SELECT count(*) = 1 FROM eia.main.metadata('electricity/retail-sales') WHERE name IS NOT NULL",
+      "rows": [
+        [
+          true
+        ]
+      ]
+    },
+    {
+      "name": "live frequencies",
+      "sql": "SELECT count(*) = 1 FROM eia.main.frequencies('electricity/retail-sales') WHERE frequency='monthly'",
+      "rows": [
+        [
+          true
+        ]
+      ]
+    },
+    {
+      "name": "live measures",
+      "sql": "SELECT count(*) = 1 FROM eia.main.measures('electricity/retail-sales') WHERE measure='price'",
+      "rows": [
+        [
+          true
+        ]
+      ]
+    },
+    {
+      "name": "live facets",
+      "sql": "SELECT count(*) = 1 FROM eia.main.facets('electricity/retail-sales') WHERE facet='stateid'",
+      "rows": [
+        [
+          true
+        ]
+      ]
+    },
+    {
+      "name": "live facet values",
+      "sql": "SELECT count(*) = 1 FROM eia.main.facet_values('electricity/retail-sales', 'sectorid') WHERE id='RES'",
+      "rows": [
+        [
+          true
+        ]
+      ]
+    },
+    {
+      "name": "live paginated observations",
+      "sql": "SELECT count(*) = 3 AND count(value) = 3 FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{\"stateid\":[\"CO\"],\"sectorid\":[\"RES\"]}', start_period := '2024-01', end_period := '2024-03', page_size := 2)",
+      "rows": [
+        [
+          true
+        ]
+      ]
+    },
+    {
+      "name": "live paginated legacy series",
+      "sql": "SELECT count(*) = 3 AND count(value) = 3 FROM eia.main.series('ELEC.SALES.CO-RES.A', start_period := '2022', end_period := '2024', page_size := 2)",
+      "rows": [
+        [
+          true
+        ]
+      ]
+    }
+  ]
+}

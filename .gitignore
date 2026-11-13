@@ -9,3 +9,13 @@ dist/
 build/
 *.egg-info/
 .DS_Store
+
+# Local configuration and release verification outputs
+.env
+.env.*
+!.env.example
+build/
+
+# Optional semantic-lint caches are local evidence, not source.
+.vgi-review-cache.json
+.vgi-sim-cache.json

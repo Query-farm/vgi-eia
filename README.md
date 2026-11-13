@@ -1,314 +1,188 @@
-<!-- managed-by: vgi-starters (edit upstream in shared/README.md.tmpl, then run tools/render.py) -->
-<p align="center">
-  <img src="https://query.farm/media-kit/products/vgi/vgi-logo.png" alt="Vector Gateway Interface (VGI)" width="320">
-</p>
+# vgi-eia
 
-<p align="center"><em>A Query.Farm VGI worker for DuckDB, written in Python.</em></p>
+Query US Energy Information Administration data from DuckDB through a Python VGI
+worker. Explore API v2 routes, frequencies and facets, then stream observations
+or retrieve a legacy series ID through EIA's v2 translation endpoint.
 
-# VGI Starter Worker — Python
+## Install and query
 
-[![CI](https://github.com/Query-farm/vgi-starter-python/actions/workflows/ci.yml/badge.svg)](https://github.com/Query-farm/vgi-starter-python/actions/workflows/ci.yml)
-[![vgi worker: query.farm](https://query.farm/media-kit/shields/vgi-worker.svg)](https://query.farm)
-
-[VGI](https://query.farm/vgi) lets DuckDB call functions that live in a separate
-process: your code, in any language, exposed as ordinary SQL. This worker adds
-three example functions that you rename and replace with your own:
-
-| Function | Kind | Shows you how to |
-|---|---|---|
-| `greet(name)` / `greet(name, style)` | scalar | vectorize over a column, overload, constrain a constant |
-| `sequence_table(count, step := 1)` | table | stream rows in batches, take named arguments |
-| `fetch_items(base_url, page_size := 100)` | table | page through a REST API, retry, read a secret |
-
-<!-- template-only:start -->
-## Use this template
-
-This repository is a **template**. Click **Use this template** on GitHub, or:
-
-```bash
-gh repo create my-org/weather-worker --template Query-farm/vgi-starter-python --private --clone
-cd weather-worker
-make init NAME=weather     # renames catalog, package, binary, env vars; removes this section
-make check                 # lint + tests over every transport + metadata score
-```
-
-Prefer to work with an AI coding agent? `make init` first, then hand it
-[AGENTS.md](AGENTS.md). See [Using with coding agents](#using-with-coding-agents).
-
-Starters exist for [Python](https://github.com/Query-farm/vgi-starter-python),
-[TypeScript](https://github.com/Query-farm/vgi-starter-typescript),
-[Go](https://github.com/Query-farm/vgi-starter-go),
-[Rust](https://github.com/Query-farm/vgi-starter-rust),
-[Java](https://github.com/Query-farm/vgi-starter-java) and
-[C#](https://github.com/Query-farm/vgi-starter-csharp). They are generated from
-[Query-farm/vgi-starters](https://github.com/Query-farm/vgi-starters); send
-changes there.
-<!-- template-only:end -->
-
-## Quick start
-
-**Prerequisites:** Python 3.13+ and [uv](https://docs.astral.sh/uv/) (it runs the SQL
-test runner and the metadata checker).
-
-```bash
-make build
-```
-
-Then open DuckDB 2.0 or [Haybarn](https://query.farm/products/haybarn) and attach the
-worker. `LOCATION` is the command DuckDB runs to start it; use an absolute path,
-because a relative one resolves against DuckDB's working directory.
-
-**DuckDB 2.0:**
+Requires Python 3.13 or newer. Install a GitHub Release wheel, or run `make build`
+in the locked source checkout. [Register for an EIA API key](https://www.eia.gov/opendata/)
+and inject it as `EIA_API_KEY` in the worker environment or as a SQL secret.
+Environment files are not loaded automatically. Never commit actual credentials.
 
 ```sql
 SET allow_extension_repositories = 'allowed';
-CREATE EXTENSION REPOSITORY IF NOT EXISTS query_farm WITH PREFIX 'https://duckdb-extensions.query.farm';
+CREATE EXTENSION REPOSITORY IF NOT EXISTS query_farm
+    WITH PREFIX 'https://duckdb-extensions.query.farm';
 INSTALL vgi FROM query_farm;
 LOAD vgi FROM query_farm;
-ATTACH 'starter' (TYPE vgi, LOCATION '/abs/path/to/vgi-starter-python/.venv/bin/vgi-starter-worker');
+ATTACH 'eia' (TYPE vgi, LOCATION '/absolute/path/to/.venv/bin/vgi-eia-worker');
+CREATE SECRET eia_key (TYPE eia_api, API_KEY 'your-EIA-api-key');
+
+SELECT route, name FROM eia.main.routes(route := 'electricity') ORDER BY route;
+SELECT measure, units
+FROM eia.main.measures('electricity/retail-sales') ORDER BY measure;
+
+SELECT period, value, value_text, units
+FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly',
+    facets_json := '{"stateid":["CO"],"sectorid":["RES"]}',
+    start_period := '2024-01', end_period := '2024-12')
+ORDER BY period;
 ```
 
-**Haybarn 2.0** (`uvx haybarn-cli`):
+A single applicable `eia_api` SQL secret takes precedence over `EIA_API_KEY`.
+An invalid explicit key fails instead of falling back. Keys are never stored in
+continuation state, and EIA's credential-echoing `request` object is discarded.
+EIA's public `DEMO_KEY` can be used for limited exploration, but its shared quota
+is unsuitable for a deployed service.
+
+## Functions
+
+All functions are in `eia.main`. SQL NULL arguments are rejected.
+
+| Function | Purpose |
+| --- | --- |
+| `routes(route := '')` | Direct child routes; empty selects the root; leaf routes return zero children |
+| `metadata(route)` | One row containing source notes, period bounds and complete metadata JSON |
+| `frequencies(route)` | Accepted frequency identifiers and native period formats |
+| `measures(route)` | Available numeric data columns, aliases and published units |
+| `facets(route)` | Dimension identifiers accepted by observation filters |
+| `facet_values(route, facet)` | Complete dimension-value IDs, names and aliases |
+| `observations(route, measure, frequency, ...)` | One measure per source row at an explicit frequency |
+| `series(series_id, ...)` | Legacy ID translated through `/v2/seriesid/`; frequency/measure inferred |
+
+Routes are relative metadata paths such as `electricity/retail-sales`. Omit `/v2`,
+`/data`, leading/trailing slashes and URL components. Absolute URLs, traversal and
+query injection are rejected. Discover each route's supported parameters before
+requesting observations; EIA datasets have different dimensions and frequencies.
 
 ```sql
-INSTALL vgi FROM community;
-LOAD vgi;
-ATTACH 'starter' (TYPE vgi, LOCATION '/abs/path/to/vgi-starter-python/.venv/bin/vgi-starter-worker');
+SELECT frequency, period_format
+FROM eia.main.frequencies('electricity/retail-sales') ORDER BY frequency;
+SELECT id, name
+FROM eia.main.facet_values('electricity/retail-sales', 'sectorid') ORDER BY id;
+
+SELECT period, value, units
+FROM eia.main.series('ELEC.SALES.CO-RES.A',
+    start_period := '2022', end_period := '2024') ORDER BY period;
 ```
 
-Now call the functions:
+Observations and legacy series accept these named arguments:
+
+| Argument | Default | Meaning |
+| --- | --- | --- |
+| `start_period`, `end_period` | `''` | Inclusive native EIA bounds; empty leaves the bound open |
+| `page_size` | `1000` | Source rows per request, 1–5000 |
+| `max_rows` | `0` | Explicit output cap up to 10 million; zero retrieves every match |
+| `start_offset` | `0` | Zero-based source row offset |
+| `sort_direction` | `'asc'` | `asc` or `desc`, applied to periods and dimension tie-breakers |
+
+`observations()` additionally accepts `facets_json := '{}'`: an object mapping
+facet names to nonempty arrays of distinct strings. String identifiers preserve
+leading zeroes. One metadata request validates the measure, frequency and facets,
+and obtains all facet IDs as sort tie-breakers. SQL WHERE clauses filter locally;
+use arguments to reduce upstream work. Each call selects one numeric measure;
+join calls explicitly when several measures are needed.
+
+Period bounds use the source's advertised format: years, months, quarters,
+dates or ISO hours. The source validates dataset-specific date semantics. The
+worker does not convert annual/quarterly/hourly periods into invented dates.
+
+## Values and complete results
+
+- `value` is DOUBLE in published units, without rescaling. `value_text` preserves
+  source strings; older numeric JSON values use canonical numeric text. It is not
+  a decimal precision guarantee for legacy JSON numbers.
+- `value_status` distinguishes numeric, missing, withheld and insignificant.
+  JSON null, blank strings, `null`, `NA`, `N/A` and `--` are missing; `w`/`W` are
+  withheld and `*` is insignificant. Those become SQL NULL while their source
+  marker remains available. Unknown or non-finite numeric values fail.
+- `units` comes from the row's `<measure>-units` field. `dimensions_json` retains
+  dimension IDs and labels; `source_json` retains the entire original row.
+  Optional missing metadata returns NULL. Use ORDER BY for final SQL ordering.
+- One validated source page becomes one Arrow batch. Source counts, repeated
+  pages, duplicate identities and frequency changes are checked. A short/empty
+  page before the advertised end fails, as does any upstream warning. Requests
+  never exceed EIA's 5000-row page ceiling.
+- An explicit output cap returns a prefix; SQL LIMIT alone is not an upstream
+  cap. Separate calls are not an atomic snapshot, and equal-count concurrent
+  revisions can escape detection. Prefer bounded historical period windows.
+- Facet-value endpoints have no pagination in EIA's published OpenAPI schema.
+  The worker checks `totalFacets` against the complete bounded response and fails
+  on truncation or duplicates. Metadata discovery uses one bounded response.
+- Legacy series must identify a single measure through its per-row units field.
+  Ambiguous responses fail with guidance to use `observations()` explicitly.
+  There is no API v1 client, bulk-file downloader, forecast-model-specific wrapper,
+  persistent cache, or historical vintage reconstruction.
+
+## HTTP authentication and deployment
+
+```sh
+export VGI_BEARER_TOKENS="$(openssl rand -hex 32)=analyst"
+vgi-eia-worker --http --host 127.0.0.1 --port 8000
+```
+
+Store persistent tokens in a secret manager. Tokens contain 32–4096 characters;
+multiple principals use `token1=principal1,token2=principal2`. Empty or malformed
+configuration fails startup without exposing its contents. Omitting the variable
+leaves HTTP unauthenticated for local development. Each principal can access the
+whole catalog. `/health` remains public; terminate TLS at your service ingress.
 
 ```sql
-SELECT starter.main.greet('Ada');                         -- Hi, Ada!
-SELECT starter.main.greet('Ada', 'formal');               -- Good day, Ada.
-SELECT * FROM starter.main.sequence_table(5, step := 2) ORDER BY n;
+INSTALL httpfs FROM core;
+LOAD httpfs;
+ATTACH 'eia' (TYPE vgi, LOCATION 'https://your-worker.example',
+              bearer_token 'your-worker-bearer-token');
+CREATE SECRET eia_key (TYPE eia_api, API_KEY 'your-EIA-api-key');
 ```
 
-`fetch_items` pages through a REST API. Try it against the public demo API (25 fixed items):
+Worker bearer tokens and EIA keys have separate roles; bearer tokens never go to
+EIA. A bearer-authenticated query still requires an upstream key. Worker errors
+omit upstream bodies, request URLs and chained exceptions that could expose keys.
+Arrow RPC owns stdout. `Dockerfile` runs as a nonroot user and serves HTTP on port
+8000; `docker run -i vgi-eia stdio` selects stdio after building the image.
 
-```sql
-SELECT category, count(*) AS items, round(avg(price), 2) AS avg_price
-FROM starter.main.fetch_items('https://vgi-starter-api.query-farm.services/v1')
-GROUP BY category ORDER BY category;
+## Operations
+
+| Environment variable | Default |
+| --- | --- |
+| `EIA_API_KEY` | unset; required unless supplied as a SQL secret |
+| `EIA_TIMEOUT_SECONDS` | 30 (0.1–120) |
+| `EIA_MAX_ATTEMPTS` | 4 (1–6) |
+| `EIA_RETRY_BUDGET_SECONDS` | 120 (1–600) |
+| `EIA_MIN_INTERVAL_SECONDS` | 0.5 |
+| `EIA_MAX_RESPONSE_BYTES` | 16777216 (1 KiB–64 MiB) |
+| `EIA_API_BASE_URL` | `https://api.eia.gov/v2` |
+| `EIA_ALLOW_INSECURE_HTTP` | unset; `1` permits loopback fixture HTTP only |
+
+Network failures, 429 and 5xx responses use bounded backoff with jitter.
+`Retry-After` is honored; a delay beyond the budget fails without retrying early.
+Redirects are refused. Spacing is process-local; coordinate account quotas across
+replicas. The read budget is checked between chunks; blocking socket operations
+can extend wall time by their timeout. API base URLs are trusted operator settings.
+TLS certificate verification stays enabled; `SSL_CERT_FILE` can select your
+approved CA bundle when the environment needs a custom trust store.
+
+## Verification and releases
+
+```sh
+make check          # Ruff, strict mypy, pydoclint, pytest, SQL transports, metadata, stock DuckDB
+make smoke-live     # Official API using EIA_API_KEY; consumes its quota
+make package
+uvx twine check dist/*
+python3 ci/verify-artifacts.py --python 3.13
+make lint-ai        # Optional external-agent metadata evaluation
 ```
 
-If an older cached extension misbehaves, refresh it with `FORCE INSTALL vgi FROM query_farm;`
-(DuckDB) or `FORCE INSTALL vgi FROM community;` (Haybarn).
+Offline fixtures drive all required checks, including metadata behavior at strict
+`fail_on = "info"` with no waivers. Wheel and source installs repeat stock DuckDB
+and authenticated HTTP contracts outside the checkout. See
+[VERIFICATION.md](VERIFICATION.md) for measured results and live-check limitations.
+CI gates releases, signs both distributions with Sigstore, and attests wheel
+provenance. Source data terms remain separate from the worker's 0BSD license.
 
-## Using it in a pipeline
-
-Worker functions compose with everything else in DuckDB:
-
-```sql
--- Materialize an API into a local table.
-CREATE TABLE items AS SELECT * FROM starter.main.fetch_items('https://vgi-starter-api.query-farm.services/v1');
-
--- Join it with local files.
-SELECT i.name, i.price, s.units
-FROM items i JOIN 'sales.parquet' s ON s.item_id = i.id;
-
--- Call a scalar per row of another table.
-SELECT customer, starter.main.greet(customer, 'formal') FROM read_csv('customers.csv');
-```
-
-## Project layout
-
-```
-src/starter_worker/
-  worker.py        # assembles the catalog; add new functions to FUNCTIONS
-  meta.py          # catalog/schema metadata + helpers (object_tags, column)
-  greet.py         # scalar example (overloads, ConstParam choices)
-  sequence.py      # table function example (named args, streaming state)
-  fetch_items.py   # REST API table function (pagination, retries, secrets)
-tests/             # pytest unit tests (in-process client)
-test/sql/          # sqllogictest files run through DuckDB
-test/mock_api/     # offline mock of the REST API used by tests
-examples/          # recipes: pushdown, caching, catalog tables, aggregates, COPY …
-ci/                # integration harness used by `make test-sql` and CI
-scripts/           # vgi_template.py (init / template-diff)
-vgi-agent-tests.yaml  # private graders for the agent test tasks
-```
-
-## Adding a function
-
-1. Create `src/starter_worker/<name>.py`. Copy the closest example: `greet.py` for a
-   scalar, `sequence.py` for a generator, `fetch_items.py` for an API.
-2. Declare arguments with `Annotated[..., Param(...)]`/`ConstParam(...)` (scalars) or a
-   frozen dataclass of `Annotated[..., Arg(...)]` (table functions). Use `Arg(0, ...)`
-   for positional arguments and `Arg("name", default=...)` for named ones.
-3. Give the class a `class Meta` with `name`, `description`, `tags=object_tags(...)`
-   and `examples`.
-4. Add the class to `FUNCTIONS` in `src/starter_worker/worker.py`.
-
-**Which kind of function?**
-
-| You want to… | Use |
-|---|---|
-| compute one value per input row | a **scalar** function |
-| return a set of rows from arguments (an API, a file, a generator) | a **table** function |
-| transform or aggregate the rows of a query | a **table in-out** function or an **aggregate** |
-| expose a fixed dataset by name (`SELECT * FROM starter.main.t`) | a **catalog table** |
-| write data out to a file or service | `COPY … TO` with a copy function |
-| accept `INSERT` / `UPDATE` / `DELETE` | a catalog table with insert/update/delete functions |
-
-The [examples/](examples/) folder has a recipe for most of these. Writable tables have no
-recipe:
-
-A writable table is a catalog `Table` that names a table in-out function per operation in
-`insert_function`, `update_function` and `delete_function`, with the richest result each one
-produces in `write_result_modes`. The helpers in `vgi.write_results` (`write_options`,
-`write_result_schema`, `write_result_batch`, `row_id_field`) read DuckDB's `write_options`
-argument and build the result. UPDATE and DELETE need a scan function that emits
-`row_id_field()` and declares projection pushdown. Transactions: override `attach_supports_transactions`
-and `catalog_transaction_begin` / `_commit` / `_rollback` on the catalog. Since VGI protocol 3.3
-a table's scan and write functions are table-only: hidden from `duckdb_functions()` and not
-callable from SQL. Set `expose_scan=True` on the table to keep the scan callable as an ordinary
-table function too (write functions never are). See
-[Writable tables](https://github.com/Query-farm/vgi-python/blob/main/docs/catalog-interface.md#writable-tables)
-in the vgi-python docs.
-
-## Secrets and configuration
-
-`fetch_items` shows the recommended pattern. A bearer token comes from a DuckDB secret
-when one exists, and from an environment variable otherwise:
-
-```sql
-CREATE SECRET (TYPE starter_api, TOKEN 'your-token');      -- per session, never logged
-```
-
-```bash
-STARTER_API_TOKEN=your-token make run-http                # for servers and containers
-```
-
-Try it: the demo API's `/v1/auth` endpoint needs the published token `demo-token`.
-
-```sql
-SELECT count(*) FROM starter.main.fetch_items('https://vgi-starter-api.query-farm.services/v1/auth');   -- fails: HTTP 401
-CREATE SECRET (TYPE starter_api, TOKEN 'demo-token');
-SELECT count(*) FROM starter.main.fetch_items('https://vgi-starter-api.query-farm.services/v1/auth');   -- 25
-```
-
-Never bake credentials into the image or the source. If a function can't run without
-real credentials, its examples can't execute in CI either. Set `execute: false` on the
-metadata check for that worker (see `.github/workflows/ci.yml`), and add
-`LINT_ARGS ?= --no-execute` to the Makefile so local runs match.
-
-## Testing
-
-```bash
-make test-unit                 # fast Python unit tests
-make test-sql                  # test/sql/*.test through DuckDB (stdio)
-make test-sql TRANSPORT=http   # …over HTTP (also: launch)
-make check                     # everything CI runs
-```
-
-`test/sql/*.test` files are [sqllogictest](https://duckdb.org/docs/stable/dev/sqllogictest/intro)
-scripts. `ci/run-integration.sh` runs them against your worker and fails on any
-unexpected skip, so a broken transport can't hide behind a green run.
-`fetch_items` is tested against `test/mock_api/server.py` so tests are fast and
-offline.
-
-**Testing against real data:** put live tests in their own `.test` file that starts with
-`require-env STARTER_LIVE`. They run only when that variable is set. Add the skip reason
-to `EXPECTED_SKIP_REASONS` in CI.
-
-## Metadata and the quality score
-
-DuckDB, agents and documentation tools discover your functions through their metadata:
-titles, descriptions, argument docs, examples and keywords.
-[vgi-lint](https://github.com/Query-farm/vgi-lint-check) checks it, and CI runs it on
-every push. Its settings live in `vgi-lint.toml`, which `make lint-explain`,
-`vgi-lint lint`, and CI all read. This template scores 100/100 with no findings.
-
-```bash
-make lint-explain                              # findings, each with its fix
-make lint-explain LINT_ARGS="--format agent"   # the same, grouped for coding agents
-make lint-ai                                   # optional: an agent must solve vgi-agent-tests.yaml
-```
-
-Each report also states an **assurance level**: how much was actually verified.
-
-| Level | Reached when | Here |
-|---|---|---|
-| L1 structural | the static metadata is clean | workers that need real credentials (`execute: false` in CI) |
-| L2 behavioural | the examples also run and return what they claim | **the CI gate** |
-| L3 semantic | an agent solves the worker's own test tasks, and the docs are reviewed | `make lint-ai`, before publishing |
-
-- **How strict.** Your copy fails on warnings (`fail_on = "warning"` in `vgi-lint.toml`).
-  Raise it to `"info"` before you publish the worker for others.
-- **The linter isn't pinned.** It tracks the current quality bar, so a new rule can flag
-  metadata that passed yesterday. Fix it, or waive the finding.
-- **Waivers.** If a finding is genuinely wrong for your worker, waive it in
-  `vgi-lint.toml` with a `kind` and a `reason`.
-- **Existing workers.** If you're adding this gate to a worker that already has
-  findings, record them with `vgi-lint lint --baseline vgi-lint-baseline --update-baseline`
-  and set `baseline` in `vgi-lint.toml`. After that, only new findings fail.
-
-Metadata lives in `src/starter_worker/meta.py` and each function's `class Meta`.
-
-## Logging and debugging
-
-stdout carries the Arrow protocol, so **never print to stdout**. Log to stderr instead.
-Use the standard `logging` module (the SDK routes it to stderr); `--debug` or `--log-level DEBUG` turns it up.
-
-- Under DuckDB (stdio/launch), worker stderr shows up in DuckDB's error messages and
-  terminal.
-- In Docker it goes to `docker logs`.
-- `make debug` runs one query against the worker with debug logging on.
-
-## Deploying
-
-The same binary serves stdio (DuckDB starts it locally) or HTTP (you host it):
-
-```bash
-docker build -t weather-worker .
-docker run -p 8000:8000 -e STARTER_API_TOKEN=... weather-worker   # health: GET /health
-```
-
-```sql
-ATTACH 'starter' (TYPE vgi, LOCATION 'https://workers.example.com/starter');
-```
-
-Put hosted workers behind TLS and authentication. See
-[authentication](https://query.farm/vgi/authentication) for bearer tokens and JWTs, and
-[distributing a worker](https://query.farm/vgi/distributing-a-worker) for packaging.
-Pass secrets with `-e` or your platform's secret manager.
-
-## Releasing
-
-Push a tag like `v0.1.0`. The release workflow builds the wheel and sdist, attaches them to the GitHub release, and (if you set the repository variable `PYPI_PUBLISH=true` and configure PyPI Trusted Publishing) publishes to PyPI, so users can run `uvx vgi-starter-worker`. Without PyPI, users install straight from the repo with `uvx --from git+https://github.com/Query-farm/vgi-starter-python@v0.1.0 vgi-starter-worker`. Every artifact is signed with cosign and
-carries SLSA build provenance. `ci/check-version.sh` makes sure the tag matches the
-version in `pyproject.toml`.
-
-## Using with coding agents
-
-[AGENTS.md](AGENTS.md) is written for AI coding agents (Claude Code reads it via
-`CLAUDE.md`; Codex, Cursor and others read it directly). It covers the commands, the
-recipe for adding a function, the metadata checklist and the sharp edges. A good first
-prompt:
-
-> Read AGENTS.md. Replace `fetch_items` with `forecast(lat DOUBLE, lon DOUBLE)` that calls
-> the Open-Meteo API. Include full metadata, a mock-server test and a `STARTER_LIVE` test.
-> You're done when `make check` passes.
-
-## Keeping up with the template
-
-`make template-diff` shows what changed upstream (CI, docs, examples) since your copy was
-made. Your copy records its template version in `.vgi-starter.json`.
-
-## Learn more
-
-- [What is VGI?](https://query.farm/vgi) · [Getting started](https://query.farm/vgi/getting-started) · [Building a worker](https://query.farm/vgi/building-a-worker)
-- [Python SDK docs](https://query.farm/vgi/docs/python/): [scalar tutorial](https://query.farm/vgi/docs/python/tutorial/scalar/), [table tutorial](https://query.farm/vgi/docs/python/tutorial/table/)
-- [Distributing a worker](https://query.farm/vgi/distributing-a-worker) · [Choosing a language](https://query.farm/vgi/languages) · [llms.txt](https://query.farm/vgi/llms.txt)
-- SDK source: [vgi-python](https://github.com/Query-farm/vgi-python) · RPC layer: [https://vgi-rpc-python.query.farm](https://vgi-rpc-python.query.farm)
-
-## Support
-
-Open an issue on this repository. For VGI itself, see [query.farm](https://query.farm).
-
-## Authorship & license
-
-The starter template is written by [Query.Farm](https://query.farm) and released under
-the [BSD Zero Clause License](LICENSE) (0BSD). Use it for anything, with no attribution
-required. Replace this section with your own license once the code is yours.
+Sources: [EIA API technical documentation](https://www.eia.gov/opendata/documentation.php),
+[EIA OpenAPI download](https://www.eia.gov/opendata/eia-api-swagger.zip),
+[EIA API FAQ](https://www.eia.gov/opendata/faqs.php),
+[legacy value markers](https://www.eia.gov/opendata/v1/commands.php).

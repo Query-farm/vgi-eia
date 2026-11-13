@@ -1,16 +1,36 @@
-# Private graders for the public vgi.agent_test_tasks in the worker's catalog metadata.
-# `vgi-lint lint --ai` runs an agent on each prompt and grades it with check_sql.
-# See https://github.com/Query-farm/vgi-lint-check (VGI920).
-tasks:
-  - name: formal_greeting
-    reference_sql: SELECT starter.main.greet('Grace', 'formal') AS greeting
-  - name: sum_of_squares
-    reference_sql: SELECT sum(squared) AS total FROM starter.main.sequence_table(10)
-  - name: stepped_sequence
-    reference_sql: SELECT n FROM starter.main.sequence_table(4, step := 5) ORDER BY n
-  # Reads the public demo API (https://vgi-starter-api.query-farm.services/v1).
-  - name: items_per_category
-    check_sql: >-
-      SELECT count(*) = 3 AND sum(items) = 25
-      FROM (SELECT category, count(*) AS items
-            FROM starter.main.fetch_items('https://vgi-starter-api.query-farm.services/v1') GROUP BY category)
+{
+  "tasks": [
+    {
+      "name": "routes",
+      "reference_sql": "SELECT route, name FROM eia.main.routes(route := 'electricity') ORDER BY route"
+    },
+    {
+      "name": "metadata",
+      "reference_sql": "SELECT name, start_period, end_period FROM eia.main.metadata('electricity/retail-sales')"
+    },
+    {
+      "name": "frequencies",
+      "reference_sql": "SELECT frequency, period_format FROM eia.main.frequencies('electricity/retail-sales') ORDER BY frequency"
+    },
+    {
+      "name": "measures",
+      "reference_sql": "SELECT measure, units FROM eia.main.measures('electricity/retail-sales') ORDER BY measure"
+    },
+    {
+      "name": "facets",
+      "reference_sql": "SELECT facet, description FROM eia.main.facets('electricity/retail-sales') ORDER BY facet"
+    },
+    {
+      "name": "facet_values",
+      "reference_sql": "SELECT id, name FROM eia.main.facet_values('electricity/retail-sales', 'sectorid') ORDER BY id"
+    },
+    {
+      "name": "observations",
+      "reference_sql": "SELECT period, value, units FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{\"stateid\":[\"CO\"],\"sectorid\":[\"RES\"]}', start_period := '2024-01', end_period := '2024-03') ORDER BY period"
+    },
+    {
+      "name": "series",
+      "reference_sql": "SELECT period, value, units FROM eia.main.series('ELEC.SALES.CO-RES.A', start_period := '2022', end_period := '2024') ORDER BY period"
+    }
+  ]
+}
