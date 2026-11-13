@@ -41,3 +41,15 @@ Sigstore-signed, and the wheel carries a provenance attestation.
 Queries are not atomic snapshots across pages. Source total checks cannot detect
 all equal-count concurrent revisions. Facet listings fail on truncation because
 EIA's published OpenAPI does not specify pagination for those endpoints.
+
+## Optional AI review
+
+The optional L3 evaluation could not complete because its external agent backend
+rejected the evaluation prompt; L3 assurance is not claimed. Its documentation
+review also reported an observation-argument order mismatch. Direct stock-DuckDB
+inspection shows `duckdb_functions().parameters` and `parameter_types` align
+correctly, and the SQL suite exercises the named arguments successfully. The
+review appears to compare alphabetically sorted argument descriptors with the
+engine's unsorted parameter types. Documentation now explicitly identifies the
+three required positional arguments and the remaining named arguments. Required
+static/behavioral lint has zero findings; no lint rules were waived.

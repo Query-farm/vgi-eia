@@ -570,7 +570,9 @@ class Observations(EiaFunction[ObservationArgs]):
         "observations",
         "Read EIA observations",
         (
-            "Stream one measure at an explicit frequency. Metadata validates filters and supplies "
+            "Stream one measure at an explicit frequency. Required positional arguments are "
+            "route, measure and frequency. All other arguments are named; their display order has "
+            "no binding significance. Metadata validates filters and supplies "
             "dimension tie-breakers for stable sorting. Periods, units, missing markers and "
             "dimensions are preserved; source total changes or incomplete pages fail the query."
         ),
