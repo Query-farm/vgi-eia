@@ -136,3 +136,12 @@ Source: U.S. Energy Information Administration. See [EIA Open Data](https://www.
 No endorsement is implied. To upgrade, change the literal remote pin, verify SDK
 compatibility, rerun both windows and the live path, and inspect charts before
 replacing outputs. New recordings need explicit provenance and checksums.
+
+## SQL credential isolation
+
+The notebook creates Haybarn with a fresh temporary `secret_directory` and
+`allow_persistent_secrets=False` before attaching workers. It fully drains and
+checks an empty secret inventory before ATTACH and again before cleanup. No
+SQL secret is created; recorded mode uses its existing public dummy environment
+key, and optional live mode uses only the documented environment/DEMO_KEY path. Cleanup removes the temporary directory after closing the connection.
+Existing user SQL secrets are neither read, modified nor deleted.
