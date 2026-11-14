@@ -1,0 +1,17 @@
+{
+  "response": {
+    "totalFacets": 2,
+    "facets": [
+      {
+        "id": "RES",
+        "name": "Residential fixture",
+        "alias": "residential"
+      },
+      {
+        "id": "COM",
+        "name": "Commercial fixture",
+        "alias": "commercial"
+      }
+    ]
+  }
+}

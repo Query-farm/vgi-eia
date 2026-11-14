@@ -1,0 +1,32 @@
+{
+  "response": {
+    "name": "Synthetic monthly retail sales fixture",
+    "defaultFrequency": "monthly",
+    "startPeriod": "2024-01",
+    "endPeriod": "2024-06",
+    "frequency": [
+      {
+        "id": "monthly",
+        "description": "One authored month per row",
+        "query": "M",
+        "format": "YYYY-MM"
+      }
+    ],
+    "data": {
+      "sales": {
+        "alias": "Authored fixture sales",
+        "units": "million kilowatt hours"
+      }
+    },
+    "facets": [
+      {
+        "id": "stateid",
+        "description": "Synthetic region ID"
+      },
+      {
+        "id": "sectorid",
+        "description": "Synthetic sector ID"
+      }
+    ]
+  }
+}

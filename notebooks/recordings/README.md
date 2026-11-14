@@ -1,6 +1,6 @@
 # Official EIA API v2 recordings
 
-These five responses were retrieved on 14 November 2026 UTC using EIA's public
+The original five responses were retrieved on 14 November 2026 UTC using EIA's public
 DEMO_KEY: retail-sales metadata, price pages at offsets 0 and 6, and sales pages
 at offsets 0 and 6. Each data page requests six rows for Colorado (CO), residential
 (RES), monthly frequency, January–December 2024 inclusive. Explicit sort keys are
@@ -20,3 +20,9 @@ handles source metadata, paging, units, markers and Arrow output.
 
 Source: U.S. Energy Information Administration, https://www.eia.gov/opendata/ .
 Attribution does not imply EIA endorsement of this notebook's calculations.
+
+The additional `routes-electricity.json` records an official parent-route response
+captured later on14November2026UTC, with the same request-echo removal and checksum
+provenance. A subsequent sector-facet capture returned HTTP429; capture stopped.
+No synthetic response was substituted into this directory. The separate
+`marker_fixtures/` directory belongs only to the explicitly synthetic second notebook.

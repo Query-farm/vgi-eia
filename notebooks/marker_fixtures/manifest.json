@@ -1,0 +1,98 @@
+{
+  "source": "Authored synthetic response fixtures; no official EIA values",
+  "credential_note": "Only explicit dummy local credential accepted",
+  "records": {
+    "metadata": {
+      "file": "metadata.json",
+      "endpoint": "electricity/retail-sales/",
+      "query": {},
+      "saved_sha256": "cfcecf5d8c0f43dd9443530ec3a3a496bca6e05907bccb0041b87b76ff6394d4",
+      "synthetic": true,
+      "description": "Authored minimal metadata for the local fixture contract"
+    },
+    "sectors": {
+      "file": "sectors.json",
+      "endpoint": "electricity/retail-sales/facet/sectorid/",
+      "query": {},
+      "saved_sha256": "0da63b8e796adb831dc5de05cfd2aa0a7eddfd14699e42f4d7a056f89aec212c",
+      "synthetic": true,
+      "description": "Two synthetic dictionary entries; only RES has authored data"
+    },
+    "legacy-0": {
+      "file": "legacy-0.json",
+      "endpoint": "seriesid/ELEC.SALES.CO-RES.M",
+      "query": {
+        "start": "2024-01",
+        "end": "2024-06",
+        "sort[0][column]": "period",
+        "sort[0][direction]": "asc",
+        "offset": "0",
+        "length": "3"
+      },
+      "saved_sha256": "2d06ddce26b6f809b53cd16d1019c984a742d16d2ba5c556f9d6064db654336b",
+      "synthetic": true,
+      "description": "Authored legacy endpoint page; same six source rows as explicit route"
+    },
+    "explicit-0": {
+      "file": "explicit-0.json",
+      "endpoint": "electricity/retail-sales/data/",
+      "query": {
+        "data[0]": "sales",
+        "frequency": "monthly",
+        "facets[stateid][]": "CO",
+        "facets[sectorid][]": "RES",
+        "start": "2024-01",
+        "end": "2024-06",
+        "sort[0][column]": "period",
+        "sort[0][direction]": "asc",
+        "offset": "0",
+        "length": "3",
+        "sort[1][column]": "stateid",
+        "sort[1][direction]": "asc",
+        "sort[2][column]": "sectorid",
+        "sort[2][direction]": "asc"
+      },
+      "saved_sha256": "2d06ddce26b6f809b53cd16d1019c984a742d16d2ba5c556f9d6064db654336b",
+      "synthetic": true,
+      "description": "Authored explicit-route page with numeric zero and three nonnumeric markers"
+    },
+    "legacy-3": {
+      "file": "legacy-3.json",
+      "endpoint": "seriesid/ELEC.SALES.CO-RES.M",
+      "query": {
+        "start": "2024-01",
+        "end": "2024-06",
+        "sort[0][column]": "period",
+        "sort[0][direction]": "asc",
+        "offset": "3",
+        "length": "3"
+      },
+      "saved_sha256": "2fd662135099d63ee7c03db6b85fa2941563a8af044401e09bd4d8a5d71f567d",
+      "synthetic": true,
+      "description": "Authored legacy endpoint page; same six source rows as explicit route"
+    },
+    "explicit-3": {
+      "file": "explicit-3.json",
+      "endpoint": "electricity/retail-sales/data/",
+      "query": {
+        "data[0]": "sales",
+        "frequency": "monthly",
+        "facets[stateid][]": "CO",
+        "facets[sectorid][]": "RES",
+        "start": "2024-01",
+        "end": "2024-06",
+        "sort[0][column]": "period",
+        "sort[0][direction]": "asc",
+        "offset": "3",
+        "length": "3",
+        "sort[1][column]": "stateid",
+        "sort[1][direction]": "asc",
+        "sort[2][column]": "sectorid",
+        "sort[2][direction]": "asc"
+      },
+      "saved_sha256": "2fd662135099d63ee7c03db6b85fa2941563a8af044401e09bd4d8a5d71f567d",
+      "synthetic": true,
+      "description": "Authored explicit-route page with numeric zero and three nonnumeric markers"
+    }
+  }
+}

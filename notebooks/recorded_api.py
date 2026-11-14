@@ -1,4 +1,4 @@
-"""Serve verified EIA recordings only for their exact original request parameters."""
+"""Serve hash-verified EIA response fixtures for exact declared request parameters."""
 
 from __future__ import annotations
 
@@ -16,8 +16,8 @@ class RecordedApi:
     def __init__(self, directory: Path):
         self.manifest = json.loads((directory / "manifest.json").read_text())
         self.records = self.manifest["records"]
-        if set(self.records) != {"metadata", "price-0", "price-6", "sales-0", "sales-6"}:
-            raise ValueError("All five documented response recordings are required")
+        if not self.records:
+            raise ValueError("A nonempty, hash-verified response manifest is required")
         self.payloads = {}
         for key, record in self.records.items():
             raw = (directory / record["file"]).read_bytes()

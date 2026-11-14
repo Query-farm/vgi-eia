@@ -111,6 +111,16 @@
       "original_response_sha256": "0b656d0eaf2f86ee43c741804ed827418cc79206877bf129a9588b28f353ab2f",
       "saved_sha256": "d10f5ad7e1a541b42e345b40363c6faa77dfc17a1624549229ad54e943fd6fba",
       "transformation": "Removed top-level credential-echoing request object; JSON reserialized, response data unchanged"
+    },
+    "routes-electricity": {
+      "file": "routes-electricity.json",
+      "endpoint": "electricity/",
+      "query": {},
+      "official_url": "https://api.eia.gov/v2/electricity/",
+      "retrieved_at_utc": "2026-11-14T23:24:05.226957+00:00",
+      "original_response_sha256": "5d03a786dc45fedf256cc50efd174d21fd3a04deeb33df1ed517877e999dac43",
+      "saved_sha256": "6fd11ce753d5cb498222d78de3d4ad706ce0beb98f0382615ed72ab675d4f123",
+      "transformation": "Removed top-level credential-echoing request object; JSON reserialized, response data unchanged"
     }
   }
 }

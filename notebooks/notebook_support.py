@@ -1,4 +1,4 @@
-"""Source selection and presentation; all price weighting stays in visible SQL."""
+"""Source transport configuration; all analytical work stays in visible SQL."""
 
 from __future__ import annotations
 
@@ -7,9 +7,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import certifi
-import matplotlib.pyplot as plt
-import seaborn as sns
-from IPython.display import Markdown, display
 
 from recorded_api import FIXTURE_KEY, RecordedApi
 
@@ -31,6 +28,11 @@ def configure(end_month: int, mode: str):
         raise ValueError("END_MONTH must be an integer from 1 through 12, within the fixed 2024 window")
     if mode not in ("recorded", "live"):
         raise ValueError("DATA_MODE must be 'recorded' or 'live'")
+    return _source(mode)
+
+
+def _source(mode: str):
+    """Choose one explicit transport before the worker starts in a fresh kernel."""
     previous = {key: os.environ.get(key) for key in MANAGED}
     for key in MANAGED:
         if key not in ("EIA_API_KEY", "SSL_CERT_FILE"):
@@ -45,18 +47,22 @@ def configure(end_month: int, mode: str):
     )
     replay = None
     run_at = datetime.now(UTC).isoformat()
-    if mode == "recorded":
-        replay = RecordedApi(Path(__file__).resolve().parent / "recordings").start()
+    if mode in ("recorded", "synthetic"):
+        directory = "recordings" if mode == "recorded" else "marker_fixtures"
+        replay = RecordedApi(Path(__file__).resolve().parent / directory).start()
         os.environ.update(
             EIA_API_KEY=FIXTURE_KEY,
             EIA_API_BASE_URL=replay.url,
             EIA_ALLOW_INSECURE_HTTP="1",
             EIA_MIN_INTERVAL_SECONDS="0",
         )
-        dates = sorted({r["retrieved_at_utc"][:10] for r in replay.records.values()})
-        provenance = "Recorded official responses · captured " + ", ".join(dates) + " UTC"
+        if mode == "recorded":
+            dates = sorted({r["retrieved_at_utc"][:10] for r in replay.records.values()})
+            provenance = "Recorded official responses · captured " + ", ".join(dates) + " UTC"
+        else:
+            provenance = "Authored synthetic six-month fixture · not EIA observations"
     else:
-        os.environ.setdefault("EIA_API_KEY", "DEMO_KEY")
+        os.environ["EIA_API_KEY"] = "DEMO_KEY"
         provenance = "Live official responses · requested " + run_at[:19] + " UTC"
     return replay, previous, run_at, provenance
 
@@ -71,29 +77,8 @@ def cleanup(replay, previous):
             os.environ[key] = value
 
 
-def prose(text: str) -> None:
-    display(Markdown(text))
-
-
-def theme() -> None:
-    sns.set_theme(
-        style="whitegrid",
-        rc={
-            "figure.dpi": 145,
-            "axes.spines.top": False,
-            "axes.spines.right": False,
-            "grid.color": "#E8EDE9",
-            "text.color": "#243B2F",
-            "axes.labelcolor": "#405047",
-            "text.parse_math": False,
-            "legend.frameon": False,
-        },
-    )
-
-
-def chart(fig, title: str, subtitle: str, source: str) -> None:
-    fig.text(0.08, 0.98, title, ha="left", va="top", fontsize=17, fontweight="semibold")
-    fig.text(0.08, 0.91, subtitle, ha="left", va="top", fontsize=10, color="#58685F")
-    fig.tight_layout(rect=(0.02, 0.10, 1, 0.83))
-    fig.text(0.08, 0.03, source, fontsize=8, color="#6C7D73")
-    plt.show()
+def configure_markers(minimum: int):
+    """Select only authored local marker fixtures; never use a network API key."""
+    if type(minimum) is not int or not 1 <= minimum <= 6:
+        raise ValueError("MIN_OBSERVED_MONTHS must be an integer from 1 through 6")
+    return _source("synthetic")

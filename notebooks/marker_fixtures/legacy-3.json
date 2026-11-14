@@ -1,0 +1,35 @@
+{
+  "response": {
+    "frequency": "monthly",
+    "total": "6",
+    "data": [
+      {
+        "period": "2024-04",
+        "stateid": "CO",
+        "stateDescription": "Synthetic Colorado-like region",
+        "sectorid": "RES",
+        "sectorName": "Residential fixture",
+        "sales": null,
+        "sales-units": "million kilowatt hours"
+      },
+      {
+        "period": "2024-05",
+        "stateid": "CO",
+        "stateDescription": "Synthetic Colorado-like region",
+        "sectorid": "RES",
+        "sectorName": "Residential fixture",
+        "sales": "*",
+        "sales-units": "million kilowatt hours"
+      },
+      {
+        "period": "2024-06",
+        "stateid": "CO",
+        "stateDescription": "Synthetic Colorado-like region",
+        "sectorid": "RES",
+        "sectorName": "Residential fixture",
+        "sales": "18",
+        "sales-units": "million kilowatt hours"
+      }
+    ]
+  }
+}

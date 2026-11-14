@@ -1,0 +1,41 @@
+{
+  "response": {
+    "id": "electricity",
+    "name": "Electricity",
+    "description": "EIA electricity survey data",
+    "routes": [
+      {
+        "id": "retail-sales",
+        "name": "Electricity Sales to Ultimate Customers",
+        "description": "Electricity sales to ultimate customer by state and sector (number of customers, average price, revenue, and megawatthours of sales).  \n    Sources: Forms EIA-826, EIA-861, EIA-861M"
+      },
+      {
+        "id": "electric-power-operational-data",
+        "name": "Electric Power Operations (Annual and Monthly)",
+        "description": "Monthly and annual electric power operations by state, sector, and energy source.\n    Source: Form EIA-923"
+      },
+      {
+        "id": "rto",
+        "name": "Electric Power Operations (Daily and Hourly)",
+        "description": "Hourly and daily electric power operations by balancing authority.  \n    Source: Form EIA-930"
+      },
+      {
+        "id": "state-electricity-profiles",
+        "name": "State Specific Data",
+        "description": "State Specific Data"
+      },
+      {
+        "id": "operating-generator-capacity",
+        "name": "Inventory of Operable Generators",
+        "description": "Inventory of operable generators in the U.S.\n    Source: Forms EIA-860, EIA-860M"
+      },
+      {
+        "id": "facility-fuel",
+        "name": "Electric Power Operations for Individual Power Plants (Annual and Monthly)",
+        "description": "Annual and monthly electric power operations for individual power plants, by energy source and prime mover\n    Source: Form EIA-923"
+      }
+    ]
+  },
+  "apiVersion": "2.1.14",
+  "ExcelAddInVersion": "2.1.0"
+}
