@@ -11,6 +11,7 @@ from typing import Annotated, Any, ClassVar
 import pyarrow as pa
 from vgi.arguments import Arg
 from vgi.invocation import BindResponse
+from vgi.metadata import FunctionExample
 from vgi.table_function import BindParams, OutputCollector, ProcessParams, TableFunctionGenerator, init_single_worker
 from vgi_rpc import ArrowSerializableDataclass
 
@@ -83,6 +84,57 @@ OBSERVATIONS = schema(
     ("units", pa.string(), "Per-row source units, without rescaling."),
     ("dimensions_json", pa.string(), "All dimension IDs and labels from the original row."),
     ("source_json", pa.string(), "Complete source observation object."),
+)
+
+
+# Composed examples: each combines two of this worker's functions in one query. Each is
+# defined once here and attached to the function that drives it; the schema-level list
+# is assembled from the per-function lists in worker.py.
+DEFAULT_FREQUENCY_FORMAT_EXAMPLE = FunctionExample(
+    description=(
+        "Pair the retail-sales dataset's default frequency with that frequency's native period "
+        "format and the advertised period range, to know how to write start_period and end_period"
+    ),
+    sql=(
+        "SELECT m.name, m.default_frequency, f.period_format, m.start_period, m.end_period "
+        "FROM eia.main.metadata('electricity/retail-sales') AS m "
+        "JOIN eia.main.frequencies('electricity/retail-sales') AS f ON f.frequency = m.default_frequency "
+        "ORDER BY f.frequency"
+    ),
+)
+SALES_WEIGHTED_PRICE_EXAMPLE = FunctionExample(
+    description=(
+        "Colorado residential 2024 electricity price weighted by monthly retail sales, beside the "
+        "simple average of the 12 monthly prices (cents per kilowatt-hour)"
+    ),
+    sql=(
+        "WITH price AS (SELECT period, value AS cents_per_kwh FROM eia.main.observations("
+        "'electricity/retail-sales', 'price', 'monthly', "
+        'facets_json := \'{"stateid":["CO"],"sectorid":["RES"]}\', '
+        "start_period := '2024-01', end_period := '2024-12')), "
+        "sales AS (SELECT period, value AS million_kwh FROM eia.main.observations("
+        "'electricity/retail-sales', 'sales', 'monthly', "
+        'facets_json := \'{"stateid":["CO"],"sectorid":["RES"]}\', '
+        "start_period := '2024-01', end_period := '2024-12')) "
+        "SELECT count(*) AS months, "
+        "round(sum(price.cents_per_kwh * sales.million_kwh) / sum(sales.million_kwh), 2) AS weighted_price, "
+        "round(avg(price.cents_per_kwh), 2) AS simple_average_price "
+        "FROM price JOIN sales USING (period) ORDER BY months"
+    ),
+)
+SECTOR_COVERAGE_EXAMPLE = FunctionExample(
+    description=(
+        "List every retail-sales sector ID and name with Colorado's 2024 annual average price, "
+        "NULL for sectors with no published 2024 Colorado price"
+    ),
+    sql=(
+        "SELECT s.id AS sectorid, s.name AS sector, o.value AS cents_per_kwh "
+        "FROM eia.main.facet_values('electricity/retail-sales', 'sectorid') AS s "
+        "LEFT JOIN eia.main.observations('electricity/retail-sales', 'price', 'annual', "
+        "facets_json := '{\"stateid\":[\"CO\"]}', start_period := '2024', end_period := '2024') AS o "
+        "ON o.dimensions_json ->> '$.sectorid' = s.id "
+        "ORDER BY s.id"
+    ),
 )
 
 
@@ -426,6 +478,7 @@ class Metadata(EiaFunction[RouteArgs]):
         ),
         METADATA,
         "SELECT name, start_period, end_period FROM eia.main.metadata('electricity/retail-sales')",
+        extra_examples=(DEFAULT_FREQUENCY_FORMAT_EXAMPLE,),
     )
 
     @classmethod
@@ -544,6 +597,7 @@ class FacetValues(EiaFunction[FacetArgs]):
         ),
         FACET_VALUES,
         "SELECT id, name FROM eia.main.facet_values('electricity/retail-sales', 'sectorid') ORDER BY id",
+        extra_examples=(SECTOR_COVERAGE_EXAMPLE,),
     )
 
     @classmethod
@@ -582,6 +636,7 @@ class Observations(EiaFunction[ObservationArgs]):
             '\'price\', \'monthly\', facets_json := \'{"stateid":["CO"],"sectorid":["RES"]}\', '
             "start_period := '2024-01', end_period := '2024-03') ORDER BY period"
         ),
+        extra_examples=(SALES_WEIGHTED_PRICE_EXAMPLE,),
     )
 
 

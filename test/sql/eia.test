@@ -118,6 +118,26 @@ SELECT period, value, measure FROM eia.main.series('ELEC.SALES.CO-RES.A', start_
 2023	13.0	sales
 2024	14.5	sales
 
+# composed: metadata's default frequency joined to frequencies() (DEFAULT_FREQUENCY_FORMAT_EXAMPLE)
+query TTTTT
+SELECT m.name, m.default_frequency, f.period_format, m.start_period, m.end_period FROM eia.main.metadata('electricity/retail-sales') AS m JOIN eia.main.frequencies('electricity/retail-sales') AS f ON f.frequency = m.default_frequency ORDER BY f.frequency;
+----
+Electricity Retail Sales	monthly	YYYY-MM	2024-01	2024-05
+
+# composed: two measures joined on period (SALES_WEIGHTED_PRICE_EXAMPLE shape; the fixture's
+# only numeric months are 2024-01 (10.25) and 2024-05 (12.75), identical for every measure)
+query IRR
+WITH price AS (SELECT period, value AS cents_per_kwh FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{"stateid":["CO"],"sectorid":["RES"]}', start_period := '2024-01', end_period := '2024-05')), sales AS (SELECT period, value AS million_kwh FROM eia.main.observations('electricity/retail-sales', 'sales', 'monthly', facets_json := '{"stateid":["CO"],"sectorid":["RES"]}', start_period := '2024-01', end_period := '2024-05')) SELECT count(*) AS months, round(sum(price.cents_per_kwh * sales.million_kwh) / sum(sales.million_kwh), 2) AS weighted_price, round(avg(price.cents_per_kwh), 2) AS simple_average_price FROM price JOIN sales USING (period) ORDER BY months;
+----
+5	11.64	11.5
+
+# composed: every sector from facet_values() left-joined to observations' sectorid (SECTOR_COVERAGE_EXAMPLE shape)
+query TTR
+SELECT s.id AS sectorid, s.name AS sector, o.value AS cents_per_kwh FROM eia.main.facet_values('electricity/retail-sales', 'sectorid') AS s LEFT JOIN eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{"stateid":["CO"]}', start_period := '2024-01', end_period := '2024-01') AS o ON o.dimensions_json ->> '$.sectorid' = s.id ORDER BY s.id;
+----
+COM	COM	NULL
+RES	RES	10.25
+
 # invalid route
 statement error
 SELECT * FROM eia.main.metadata('https://example.com');

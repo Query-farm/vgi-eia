@@ -83,7 +83,26 @@ facet names to nonempty arrays of distinct strings. String identifiers preserve
 leading zeroes. One metadata request validates the measure, frequency and facets,
 and obtains all facet IDs as sort tie-breakers. SQL WHERE clauses filter locally;
 use arguments to reduce upstream work. Each call selects one numeric measure;
-join calls explicitly when several measures are needed.
+join calls explicitly when several measures are needed:
+
+```sql
+-- Colorado residential 2024 price weighted by monthly sales (14.92 cents/kWh
+-- against a 14.88 simple average of the 12 monthly prices).
+WITH price AS (
+    SELECT period, value AS cents_per_kwh
+    FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly',
+        facets_json := '{"stateid":["CO"],"sectorid":["RES"]}',
+        start_period := '2024-01', end_period := '2024-12')),
+sales AS (
+    SELECT period, value AS million_kwh
+    FROM eia.main.observations('electricity/retail-sales', 'sales', 'monthly',
+        facets_json := '{"stateid":["CO"],"sectorid":["RES"]}',
+        start_period := '2024-01', end_period := '2024-12'))
+SELECT count(*) AS months,
+    round(sum(price.cents_per_kwh * sales.million_kwh) / sum(sales.million_kwh), 2) AS weighted_price,
+    round(avg(price.cents_per_kwh), 2) AS simple_average_price
+FROM price JOIN sales USING (period) ORDER BY months;
+```
 
 Period bounds use the source's advertised format: years, months, quarters,
 dates or ISO hours. The source validates dataset-specific date semantics. The

@@ -31,6 +31,10 @@
     {
       "name": "series",
       "reference_sql": "SELECT period, value, units FROM eia.main.series('ELEC.SALES.CO-RES.A', start_period := '2022', end_period := '2024') ORDER BY period"
+    },
+    {
+      "name": "residential_spend_per_customer",
+      "check_sql": "SELECT (SELECT count(*) FROM tx_res_spend) = 1 AND abs((SELECT max(dollars_per_customer) FROM tx_res_spend) / (SELECT r.value * 1000000 / c.value FROM eia.main.observations('electricity/retail-sales', 'revenue', 'annual', facets_json := '{\"stateid\":[\"TX\"],\"sectorid\":[\"RES\"]}', start_period := '2023', end_period := '2023') AS r JOIN eia.main.observations('electricity/retail-sales', 'customers', 'annual', facets_json := '{\"stateid\":[\"TX\"],\"sectorid\":[\"RES\"]}', start_period := '2023', end_period := '2023') AS c USING (period)) - 1) < 0.001"
     }
   ]
 }

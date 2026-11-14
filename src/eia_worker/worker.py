@@ -56,6 +56,20 @@ CATALOG_TAGS["vgi.agent_test_tasks"] = json.dumps(
         }
         for fn in FUNCTIONS
     ]
+    # Composed task: two observations() calls joined on period. Graded live by check_sql
+    # in vgi-agent-tests.yaml; no published example computes revenue per customer.
+    + [
+        {
+            "name": "residential_spend_per_customer",
+            "prompt": (
+                "Using the eia catalog's electricity/retail-sales dataset at annual frequency, compute "
+                "Texas (stateid TX) residential (sectorid RES) average electricity spending per customer "
+                "in 2023, in US dollars: the revenue measure (million dollars) times 1,000,000 divided "
+                "by the customers measure for the same period. Save the answer as a temporary table "
+                "tx_res_spend with exactly one row and one DOUBLE column dollars_per_customer."
+            ),
+        }
+    ]
 )
 
 
