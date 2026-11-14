@@ -1,0 +1,72 @@
+{
+  "warnings": [
+    {
+      "warning": "incomplete return",
+      "description": "The API can only return 5000 rows in JSON format.  Please consider constraining your request with facet, start, or end, or using offset to paginate results."
+    }
+  ],
+  "response": {
+    "total": "12",
+    "dateFormat": "YYYY-MM",
+    "frequency": "monthly",
+    "data": [
+      {
+        "period": "2024-01",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "sales": "1836.52212",
+        "sales-units": "million kilowatt hours"
+      },
+      {
+        "period": "2024-02",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "sales": "1543.66022",
+        "sales-units": "million kilowatt hours"
+      },
+      {
+        "period": "2024-03",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "sales": "1522.75028",
+        "sales-units": "million kilowatt hours"
+      },
+      {
+        "period": "2024-04",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "sales": "1352.9445",
+        "sales-units": "million kilowatt hours"
+      },
+      {
+        "period": "2024-05",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "sales": "1444.80779",
+        "sales-units": "million kilowatt hours"
+      },
+      {
+        "period": "2024-06",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "sales": "1977.58314",
+        "sales-units": "million kilowatt hours"
+      }
+    ],
+    "description": "Electricity sales to ultimate customer by state and sector (number of customers, average price, revenue, and megawatthours of sales).  \n    Sources: Forms EIA-826, EIA-861, EIA-861M"
+  },
+  "apiVersion": "2.1.14",
+  "ExcelAddInVersion": "2.1.0"
+}

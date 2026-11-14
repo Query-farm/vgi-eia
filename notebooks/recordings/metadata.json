@@ -1,0 +1,61 @@
+{
+  "response": {
+    "id": "retail-sales",
+    "name": "Electricity Sales to Ultimate Customers",
+    "description": "Electricity sales to ultimate customer by state and sector (number of customers, average price, revenue, and megawatthours of sales).  \n    Sources: Forms EIA-826, EIA-861, EIA-861M",
+    "frequency": [
+      {
+        "id": "monthly",
+        "description": "One data point for each month.",
+        "query": "M",
+        "format": "YYYY-MM"
+      },
+      {
+        "id": "quarterly",
+        "description": "One data point every 3 months.",
+        "query": "Q",
+        "format": "YYYY-\"Q\"Q"
+      },
+      {
+        "id": "annual",
+        "description": "One data point for each calendar year.",
+        "query": "A",
+        "format": "YYYY"
+      }
+    ],
+    "facets": [
+      {
+        "id": "stateid",
+        "description": "State / Census Region"
+      },
+      {
+        "id": "sectorid",
+        "description": "Sector"
+      }
+    ],
+    "data": {
+      "revenue": {
+        "alias": "Revenue from Sales to Ultimate Customers",
+        "units": "million dollars"
+      },
+      "sales": {
+        "alias": "Megawatt-hours Sold to Ultimate Customers",
+        "units": "million kilowatt hours"
+      },
+      "price": {
+        "alias": "Average Price of Electricity to Ultimate Customers",
+        "units": "cents per kilowatt-hour"
+      },
+      "customers": {
+        "alias": "Number of Ultimate Customers",
+        "units": "number of customers"
+      }
+    },
+    "startPeriod": "2001-01",
+    "endPeriod": "2026-08",
+    "defaultDateFormat": "YYYY-MM",
+    "defaultFrequency": "monthly"
+  },
+  "apiVersion": "2.1.14",
+  "ExcelAddInVersion": "2.1.0"
+}

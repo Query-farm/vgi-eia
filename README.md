@@ -186,3 +186,7 @@ Sources: [EIA API technical documentation](https://www.eia.gov/opendata/document
 [EIA OpenAPI download](https://www.eia.gov/opendata/eia-api-swagger.zip),
 [EIA API FAQ](https://www.eia.gov/opendata/faqs.php),
 [legacy value markers](https://www.eia.gov/opendata/v1/commands.php).
+
+## Executable notebooks
+
+[Weight monthly electricity prices by sales](notebooks/README.md) uses recorded official EIA responses, visible SQL and a controlled half-year/full-year comparison.

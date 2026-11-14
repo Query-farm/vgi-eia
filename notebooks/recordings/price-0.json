@@ -1,0 +1,72 @@
+{
+  "warnings": [
+    {
+      "warning": "incomplete return",
+      "description": "The API can only return 5000 rows in JSON format.  Please consider constraining your request with facet, start, or end, or using offset to paginate results."
+    }
+  ],
+  "response": {
+    "total": "12",
+    "dateFormat": "YYYY-MM",
+    "frequency": "monthly",
+    "data": [
+      {
+        "period": "2024-01",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "price": "14.22",
+        "price-units": "cents per kilowatt-hour"
+      },
+      {
+        "period": "2024-02",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "price": "14.48",
+        "price-units": "cents per kilowatt-hour"
+      },
+      {
+        "period": "2024-03",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "price": "14.41",
+        "price-units": "cents per kilowatt-hour"
+      },
+      {
+        "period": "2024-04",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "price": "14.49",
+        "price-units": "cents per kilowatt-hour"
+      },
+      {
+        "period": "2024-05",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "price": "14.52",
+        "price-units": "cents per kilowatt-hour"
+      },
+      {
+        "period": "2024-06",
+        "stateid": "CO",
+        "stateDescription": "Colorado",
+        "sectorid": "RES",
+        "sectorName": "residential",
+        "price": "14.96",
+        "price-units": "cents per kilowatt-hour"
+      }
+    ],
+    "description": "Electricity sales to ultimate customer by state and sector (number of customers, average price, revenue, and megawatthours of sales).  \n    Sources: Forms EIA-826, EIA-861, EIA-861M"
+  },
+  "apiVersion": "2.1.14",
+  "ExcelAddInVersion": "2.1.0"
+}

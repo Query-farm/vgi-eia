@@ -1,0 +1,116 @@
+{
+  "source": "US Energy Information Administration API v2",
+  "credential_note": "Public DEMO_KEY used; credentials and request echoes omitted",
+  "records": {
+    "metadata": {
+      "file": "metadata.json",
+      "endpoint": "electricity/retail-sales/",
+      "query": {},
+      "official_url": "https://api.eia.gov/v2/electricity/retail-sales/",
+      "retrieved_at_utc": "2026-11-14T06:23:26.461656+00:00",
+      "original_response_sha256": "c71a0ef43717cd3a06aa640566f68599a476002fb949470ef8e6d425503548bb",
+      "saved_sha256": "5cd0d9b6b8416a4c381fc1ebfdc3d9bb0c1e5ea68915dd74ae7800d143a7e5ad",
+      "transformation": "Removed top-level credential-echoing request object; JSON reserialized, response data unchanged"
+    },
+    "price-0": {
+      "file": "price-0.json",
+      "endpoint": "electricity/retail-sales/data/",
+      "query": {
+        "data[0]": "price",
+        "frequency": "monthly",
+        "facets[stateid][]": "CO",
+        "facets[sectorid][]": "RES",
+        "start": "2024-01",
+        "end": "2024-12",
+        "sort[0][column]": "period",
+        "sort[0][direction]": "asc",
+        "sort[1][column]": "stateid",
+        "sort[1][direction]": "asc",
+        "sort[2][column]": "sectorid",
+        "sort[2][direction]": "asc",
+        "offset": "0",
+        "length": "6"
+      },
+      "official_url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+      "retrieved_at_utc": "2026-11-14T06:25:55.898406+00:00",
+      "original_response_sha256": "7e112961d1ef5a9e5cf3dca22098373fd3ed26ba2fa260f2c848f61b20e26aed",
+      "saved_sha256": "f98e96a36eea922a08d3f8d39dc0ffaab3a7a6d13933bf239832d2b4fa611940",
+      "transformation": "Removed top-level credential-echoing request object; JSON reserialized, response data unchanged"
+    },
+    "price-6": {
+      "file": "price-6.json",
+      "endpoint": "electricity/retail-sales/data/",
+      "query": {
+        "data[0]": "price",
+        "frequency": "monthly",
+        "facets[stateid][]": "CO",
+        "facets[sectorid][]": "RES",
+        "start": "2024-01",
+        "end": "2024-12",
+        "sort[0][column]": "period",
+        "sort[0][direction]": "asc",
+        "sort[1][column]": "stateid",
+        "sort[1][direction]": "asc",
+        "sort[2][column]": "sectorid",
+        "sort[2][direction]": "asc",
+        "offset": "6",
+        "length": "6"
+      },
+      "official_url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+      "retrieved_at_utc": "2026-11-14T06:26:22.112594+00:00",
+      "original_response_sha256": "4bf22ec87afec62be9a4e368d5a16ffff762858a0d1adefc63eba8153844de93",
+      "saved_sha256": "9e50de39278af74cb2cea31dcbe6e2d25fcb6ba9297d68d461188bd9dacacc6f",
+      "transformation": "Removed top-level credential-echoing request object; JSON reserialized, response data unchanged"
+    },
+    "sales-0": {
+      "file": "sales-0.json",
+      "endpoint": "electricity/retail-sales/data/",
+      "query": {
+        "data[0]": "sales",
+        "frequency": "monthly",
+        "facets[stateid][]": "CO",
+        "facets[sectorid][]": "RES",
+        "start": "2024-01",
+        "end": "2024-12",
+        "sort[0][column]": "period",
+        "sort[0][direction]": "asc",
+        "sort[1][column]": "stateid",
+        "sort[1][direction]": "asc",
+        "sort[2][column]": "sectorid",
+        "sort[2][direction]": "asc",
+        "offset": "0",
+        "length": "6"
+      },
+      "official_url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+      "retrieved_at_utc": "2026-11-14T06:27:48.159996+00:00",
+      "original_response_sha256": "37c0918330027d541068ead80ad268131bfa81eb894ff2e0292aeb4b0dc5079f",
+      "saved_sha256": "04602fe812833baebf1f22eb081c50018fdbba2bd5af542e835ca482c18edf58",
+      "transformation": "Removed top-level credential-echoing request object; JSON reserialized, response data unchanged"
+    },
+    "sales-6": {
+      "file": "sales-6.json",
+      "endpoint": "electricity/retail-sales/data/",
+      "query": {
+        "data[0]": "sales",
+        "frequency": "monthly",
+        "facets[stateid][]": "CO",
+        "facets[sectorid][]": "RES",
+        "start": "2024-01",
+        "end": "2024-12",
+        "sort[0][column]": "period",
+        "sort[0][direction]": "asc",
+        "sort[1][column]": "stateid",
+        "sort[1][direction]": "asc",
+        "sort[2][column]": "sectorid",
+        "sort[2][direction]": "asc",
+        "offset": "6",
+        "length": "6"
+      },
+      "official_url": "https://api.eia.gov/v2/electricity/retail-sales/data/",
+      "retrieved_at_utc": "2026-11-14T06:28:29.182169+00:00",
+      "original_response_sha256": "0b656d0eaf2f86ee43c741804ed827418cc79206877bf129a9588b28f353ab2f",
+      "saved_sha256": "d10f5ad7e1a541b42e345b40363c6faa77dfc17a1624549229ad54e943fd6fba",
+      "transformation": "Removed top-level credential-echoing request object; JSON reserialized, response data unchanged"
+    }
+  }
+}
