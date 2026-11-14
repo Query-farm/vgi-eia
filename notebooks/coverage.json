@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "catalogs": {
+    "released": {
+      "path": "coverage/catalog-released.json",
+      "sha256": "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+      "review": {
+        "status": "approved",
+        "reviewer": "/root/notebooks_sympy",
+        "reviewed_at": "2026-11-14T23:37:05.016026+00:00",
+        "catalog_sha256": "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+        "notes": "Actual complete worker-filtered functions/tables/views exports reconcile to eight names; authentication excludes none. Current independently captured through its full public remote SHA, with metadata/composed-example-only source changes since release. Actual analytical receipts execute the released worker; exact-current analytical execution is not claimed."
+      }
+    },
+    "current": {
+      "path": "coverage/catalog-current.json",
+      "sha256": "21690585df4e10d675fc196cdfdd3a8679ebf1dd623b11d2a80b192fef034d7f",
+      "review": {
+        "status": "approved",
+        "reviewer": "/root/notebooks_sympy",
+        "reviewed_at": "2026-11-14T23:37:05.016026+00:00",
+        "catalog_sha256": "21690585df4e10d675fc196cdfdd3a8679ebf1dd623b11d2a80b192fef034d7f",
+        "notes": "Actual complete worker-filtered functions/tables/views exports reconcile to eight names; authentication excludes none. Current independently captured through its full public remote SHA, with metadata/composed-example-only source changes since release. Actual analytical receipts execute the released worker; exact-current analytical execution is not claimed."
+      }
+    }
+  },
+  "notebooks": [
+    {
+      "path": "01_weight_monthly_electricity_prices.ipynb",
+      "sha256": "247479cb8750e022cf4e09135e42e5b0d2b5a9ccbca8587a3ba6a8e18b504123",
+      "execution": {
+        "path": "coverage/run-01.json",
+        "sha256": "4973dc648247a758e1ad1391e38bd7d9bfe0cad954d94ae574b93f8c4af93382"
+      }
+    },
+    {
+      "path": "02_zero_is_an_observation.ipynb",
+      "sha256": "3a69d2dc29171bc8ecbb016ebf405295da157db560539132c08a5cde37a7cead",
+      "execution": {
+        "path": "coverage/run-02.json",
+        "sha256": "acf3d90e16884f61f98b6b1b228ae22dd22931002085a16e25ee7661b6d60dc4"
+      }
+    }
+  ],
+  "examples": [
+    {
+      "object": {
+        "schema": "main",
+        "name": "measures"
+      },
+      "notebook": "01_weight_monthly_electricity_prices.ipynb",
+      "sql": [
+        {
+          "cell": "c6980589",
+          "reference": "eia.main.measures"
+        }
+      ],
+      "narrative_cells": [
+        "92b04da8"
+      ],
+      "result_cells": [
+        "c6980589"
+      ],
+      "interpretation_cells": [
+        "ea78b6db"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "/root/notebooks_sympy",
+        "reviewed_at": "2026-11-14T23:37:05.016026+00:00",
+        "notebook_sha256": "247479cb8750e022cf4e09135e42e5b0d2b5a9ccbca8587a3ba6a8e18b504123",
+        "catalog_sha256": [
+          "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+          "21690585df4e10d675fc196cdfdd3a8679ebf1dd623b11d2a80b192fef034d7f"
+        ],
+        "purpose": "Discover source identity and units before weighting official recordings, or separately reconcile synthetic value markers before applying an explicit completeness policy.",
+        "finding": "Returned price and sales metadata establishes cents/kWh and million kWh. Unit invariants protect the weighted comparison; normalized sales weights preserve the price unit."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "routes"
+      },
+      "notebook": "01_weight_monthly_electricity_prices.ipynb",
+      "sql": [
+        {
+          "cell": "discovery-sql",
+          "reference": "eia.main.routes"
+        }
+      ],
+      "narrative_cells": [
+        "discovery-question"
+      ],
+      "result_cells": [
+        "discovery-sql"
+      ],
+      "interpretation_cells": [
+        "discovery-finding"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "/root/notebooks_sympy",
+        "reviewed_at": "2026-11-14T23:37:05.016026+00:00",
+        "notebook_sha256": "247479cb8750e022cf4e09135e42e5b0d2b5a9ccbca8587a3ba6a8e18b504123",
+        "catalog_sha256": [
+          "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+          "21690585df4e10d675fc196cdfdd3a8679ebf1dd623b11d2a80b192fef034d7f"
+        ],
+        "purpose": "Discover source identity and units before weighting official recordings, or separately reconcile synthetic value markers before applying an explicit completeness policy.",
+        "finding": "Six nonempty official parent-route rows distinguish retail sales from operational electricity datasets. The retail-sales entry joins dataset metadata before monthly frequency/range checks; route discovery constrains the selected contract."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "metadata"
+      },
+      "notebook": "01_weight_monthly_electricity_prices.ipynb",
+      "sql": [
+        {
+          "cell": "discovery-sql",
+          "reference": "eia.main.metadata"
+        }
+      ],
+      "narrative_cells": [
+        "discovery-question"
+      ],
+      "result_cells": [
+        "discovery-finding"
+      ],
+      "interpretation_cells": [
+        "discovery-finding"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "/root/notebooks_sympy",
+        "reviewed_at": "2026-11-14T23:37:05.016026+00:00",
+        "notebook_sha256": "247479cb8750e022cf4e09135e42e5b0d2b5a9ccbca8587a3ba6a8e18b504123",
+        "catalog_sha256": [
+          "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+          "21690585df4e10d675fc196cdfdd3a8679ebf1dd623b11d2a80b192fef034d7f"
+        ],
+        "purpose": "Discover source identity and units before weighting official recordings, or separately reconcile synthetic value markers before applying an explicit completeness policy.",
+        "finding": "Actual retail-sales metadata supplies default frequency, advertised period bounds and dataset identity. Its range is checked to cover the fixed 2024 request before either measure is read."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "frequencies"
+      },
+      "notebook": "01_weight_monthly_electricity_prices.ipynb",
+      "sql": [
+        {
+          "cell": "discovery-sql",
+          "reference": "eia.main.frequencies"
+        }
+      ],
+      "narrative_cells": [
+        "discovery-question"
+      ],
+      "result_cells": [
+        "discovery-finding"
+      ],
+      "interpretation_cells": [
+        "discovery-finding"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "/root/notebooks_sympy",
+        "reviewed_at": "2026-11-14T23:37:05.016026+00:00",
+        "notebook_sha256": "247479cb8750e022cf4e09135e42e5b0d2b5a9ccbca8587a3ba6a8e18b504123",
+        "catalog_sha256": [
+          "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+          "21690585df4e10d675fc196cdfdd3a8679ebf1dd623b11d2a80b192fef034d7f"
+        ],
+        "purpose": "Discover source identity and units before weighting official recordings, or separately reconcile synthetic value markers before applying an explicit completeness policy.",
+        "finding": "Three supported frequencies are displayed; monthly is selected explicitly, its YYYY-MM format checked, and annual/quarterly choices kept distinct from monthly labels."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "facets"
+      },
+      "notebook": "01_weight_monthly_electricity_prices.ipynb",
+      "sql": [
+        {
+          "cell": "discovery-sql",
+          "reference": "eia.main.facets"
+        }
+      ],
+      "narrative_cells": [
+        "discovery-question"
+      ],
+      "result_cells": [
+        "discovery-finding"
+      ],
+      "interpretation_cells": [
+        "discovery-finding"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "/root/notebooks_sympy",
+        "reviewed_at": "2026-11-14T23:37:05.016026+00:00",
+        "notebook_sha256": "247479cb8750e022cf4e09135e42e5b0d2b5a9ccbca8587a3ba6a8e18b504123",
+        "catalog_sha256": [
+          "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+          "21690585df4e10d675fc196cdfdd3a8679ebf1dd623b11d2a80b192fef034d7f"
+        ],
+        "purpose": "Discover source identity and units before weighting official recordings, or separately reconcile synthetic value markers before applying an explicit completeness policy.",
+        "finding": "The actual stateid and sectorid facet contract is displayed and asserted before those exact keys filter the CO/RES observations; dimensions are distinguished from measures."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "observations"
+      },
+      "notebook": "01_weight_monthly_electricity_prices.ipynb",
+      "sql": [
+        {
+          "cell": "8431a2a6",
+          "reference": "eia.main.observations"
+        }
+      ],
+      "narrative_cells": [
+        "ef867563"
+      ],
+      "result_cells": [
+        "ea78b6db"
+      ],
+      "interpretation_cells": [
+        "ea78b6db"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "/root/notebooks_sympy",
+        "reviewed_at": "2026-11-14T23:37:05.016026+00:00",
+        "notebook_sha256": "247479cb8750e022cf4e09135e42e5b0d2b5a9ccbca8587a3ba6a8e18b504123",
+        "catalog_sha256": [
+          "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+          "21690585df4e10d675fc196cdfdd3a8679ebf1dd623b11d2a80b192fef034d7f"
+        ],
+        "purpose": "Discover source identity and units before weighting official recordings, or separately reconcile synthetic value markers before applying an explicit completeness policy.",
+        "finding": "Two once-materialized reads return 24 official recorded rows; six selected usable pairs yield equal14.5133 versus sales-weighted14.5251 cents/kWh. Signed monthly contributions reconcile to +0.0118 cents/kWh, with nine SQL invariants and an exact eleven-request audit."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "facet_values"
+      },
+      "notebook": "02_zero_is_an_observation.ipynb",
+      "sql": [
+        {
+          "cell": "facet-sql",
+          "reference": "eia.main.facet_values"
+        }
+      ],
+      "narrative_cells": [
+        "connection-question"
+      ],
+      "result_cells": [
+        "facet-sql"
+      ],
+      "interpretation_cells": [
+        "status-finding"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "/root/notebooks_sympy",
+        "reviewed_at": "2026-11-14T23:37:05.016026+00:00",
+        "notebook_sha256": "3a69d2dc29171bc8ecbb016ebf405295da157db560539132c08a5cde37a7cead",
+        "catalog_sha256": [
+          "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+          "21690585df4e10d675fc196cdfdd3a8679ebf1dd623b11d2a80b192fef034d7f"
+        ],
+        "purpose": "Discover source identity and units before weighting official recordings, or separately reconcile synthetic value markers before applying an explicit completeness policy.",
+        "finding": "Synthetic sector dictionary distinguishes COM and RES. Selected residential identity joins all six parsed rows; an explicit SQL identity invariant confirms the legacy ID and explicit filter refer to the selected dimension."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "series"
+      },
+      "notebook": "02_zero_is_an_observation.ipynb",
+      "sql": [
+        {
+          "cell": "routes-sql",
+          "reference": "eia.main.series"
+        }
+      ],
+      "narrative_cells": [
+        "routes-question"
+      ],
+      "result_cells": [
+        "routes-sql"
+      ],
+      "interpretation_cells": [
+        "status-finding"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "/root/notebooks_sympy",
+        "reviewed_at": "2026-11-14T23:37:05.016026+00:00",
+        "notebook_sha256": "3a69d2dc29171bc8ecbb016ebf405295da157db560539132c08a5cde37a7cead",
+        "catalog_sha256": [
+          "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+          "21690585df4e10d675fc196cdfdd3a8679ebf1dd623b11d2a80b192fef034d7f"
+        ],
+        "purpose": "Discover source identity and units before weighting official recordings, or separately reconcile synthetic value markers before applying an explicit completeness policy.",
+        "finding": "Real released legacy reader paginates six synthetic rows and reconciles all keys, original strings, parsed values, statuses, units, frequency and dimensions against explicit observations via full outer join. Zero counts as observed; w/null/* remain distinct statuses. A3-of6 display requirement permits the available30.5 subtotal; no complete-period estimate is implied."
+      }
+    }
+  ]
+}

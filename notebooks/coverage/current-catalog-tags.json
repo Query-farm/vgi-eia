@@ -1,0 +1,26 @@
+{
+  "query": "SELECT tags FROM duckdb_databases() WHERE database_name='eia'",
+  "columns": [
+    "tags"
+  ],
+  "rows": [
+    [
+      {
+        "vgi.agent_test_tasks": "[{\"name\": \"routes\", \"prompt\": \"Using eia.main.routes, discover eia routes. Use the arguments in this example and return the same columns: SELECT route, name FROM eia.main.routes(route := 'electricity') ORDER BY route\"}, {\"name\": \"metadata\", \"prompt\": \"Using eia.main.metadata, inspect eia dataset metadata. Use the arguments in this example and return the same columns: SELECT name, start_period, end_period FROM eia.main.metadata('electricity/retail-sales')\"}, {\"name\": \"frequencies\", \"prompt\": \"Using eia.main.frequencies, discover eia frequencies. Use the arguments in this example and return the same columns: SELECT frequency, period_format FROM eia.main.frequencies('electricity/retail-sales') ORDER BY frequency\"}, {\"name\": \"measures\", \"prompt\": \"Using eia.main.measures, discover eia measures. Use the arguments in this example and return the same columns: SELECT measure, units FROM eia.main.measures('electricity/retail-sales') ORDER BY measure\"}, {\"name\": \"facets\", \"prompt\": \"Using eia.main.facets, discover eia dimensions. Use the arguments in this example and return the same columns: SELECT facet, description FROM eia.main.facets('electricity/retail-sales') ORDER BY facet\"}, {\"name\": \"facet_values\", \"prompt\": \"Using eia.main.facet_values, discover eia dimension values. Use the arguments in this example and return the same columns: SELECT id, name FROM eia.main.facet_values('electricity/retail-sales', 'sectorid') ORDER BY id\"}, {\"name\": \"observations\", \"prompt\": \"Using eia.main.observations, read eia observations. Use the arguments in this example and return the same columns: SELECT period, value, units FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{\\\"stateid\\\":[\\\"CO\\\"],\\\"sectorid\\\":[\\\"RES\\\"]}', start_period := '2024-01', end_period := '2024-03') ORDER BY period\"}, {\"name\": \"series\", \"prompt\": \"Using eia.main.series, read a legacy eia series. Use the arguments in this example and return the same columns: SELECT period, value, units FROM eia.main.series('ELEC.SALES.CO-RES.A', start_period := '2022', end_period := '2024') ORDER BY period\"}, {\"name\": \"residential_spend_per_customer\", \"prompt\": \"Using the eia catalog's electricity/retail-sales dataset at annual frequency, compute Texas (stateid TX) residential (sectorid RES) average electricity spending per customer in 2023, in US dollars: the revenue measure (million dollars) times 1,000,000 divided by the customers measure for the same period. Save the answer as a temporary table tx_res_spend with exactly one row and one DOUBLE column dollars_per_customer.\"}]",
+        "vgi.author": "Query.Farm",
+        "vgi.copyright": "Copyright 2026 Query.Farm contributors",
+        "vgi.doc_llm": "Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.doc_md": "# vgi-eia\n\nExplore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.\n\nQueries use bounded HTTP responses and retries. Credentials stay out of continuation state. See README.md for deployment and operational limits.",
+        "vgi.executable_examples": "[{\"name\": \"discover_routes\", \"description\": \"Discover available functions without credentials or API requests\", \"sql\": \"SELECT function_name FROM duckdb_functions() WHERE database_name = 'eia' AND function_name = 'routes' ORDER BY function_name\", \"expected_result\": [{\"function_name\": \"routes\"}]}]",
+        "vgi.icon_url": "https://query.farm/media-kit/products/vgi/vgi-logo.png",
+        "vgi.keywords": "[\"eia\", \"economics\", \"public data\", \"time series\", \"duckdb\", \"sql\"]",
+        "vgi.license": "0BSD",
+        "vgi.source_url": "https://github.com/Query-farm/vgi-eia",
+        "vgi.subtitle": "Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units.",
+        "vgi.support_contact": "https://github.com/Query-farm/vgi-eia/issues",
+        "vgi.support_policy_url": "https://github.com/Query-farm/vgi-eia/blob/main/README.md",
+        "vgi.title": "EIA Energy Data"
+      }
+    ]
+  ]
+}

@@ -22,7 +22,7 @@ Source: U.S. Energy Information Administration, https://www.eia.gov/opendata/ .
 Attribution does not imply EIA endorsement of this notebook's calculations.
 
 The additional `routes-electricity.json` records an official parent-route response
-captured later on14November2026UTC, with the same request-echo removal and checksum
-provenance. A subsequent sector-facet capture returned HTTP429; capture stopped.
+captured later on 14 November 2026 UTC, with the same request-echo removal and checksum
+provenance. A subsequent sector-facet capture returned HTTP 429; capture stopped.
 No synthetic response was substituted into this directory. The separate
 `marker_fixtures/` directory belongs only to the explicitly synthetic second notebook.

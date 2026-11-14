@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "notebook_sha256": "3a69d2dc29171bc8ecbb016ebf405295da157db560539132c08a5cde37a7cead",
+  "catalog_sha256": "ed57aeb0317edbc003c9db566597390d3acc954f04e44649b12486881edbf52b",
+  "worker_revision": "97dcb66719dba29e459fa1afaebf322bee9bfabb",
+  "status": "success",
+  "executed_at": "2026-11-14T23:37:05.016026+00:00",
+  "engine": "Haybarn 2.0.0rc11 / community VGI; released EIA v0.1.0",
+  "command": "uv run --locked vgi-notebooks 02_zero_is_an_observation.ipynb --timeout 180",
+  "catalog_aliases": [
+    "eia"
+  ],
+  "cells": [
+    {
+      "id": "parameters",
+      "status": "success",
+      "execution_count": 1,
+      "source_sha256": "cdfed0fb99d4076c19408609d70ec2941236254f7f57107e343237fdee597289",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "bootstrap",
+      "status": "success",
+      "execution_count": 2,
+      "source_sha256": "48405b69d932ce482e6a8a7585234d9852d517e8875de54d215a560099d70d55",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "setup",
+      "status": "success",
+      "execution_count": 3,
+      "source_sha256": "ca97310187efec3f43487738c437ba7d538942c5766e2fc806ac82c197cda763",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "facet-sql",
+      "status": "success",
+      "execution_count": 4,
+      "source_sha256": "311303a5a9a4aedfd4ed04c481043e00edf4247c2cf15b25c292c96b86360f03",
+      "outputs_sha256": "025c64ef2a2f0f0996aa4526f9dd2963b5d932147ab7cc82b708403c72f25ce6"
+    },
+    {
+      "id": "routes-sql",
+      "status": "success",
+      "execution_count": 5,
+      "source_sha256": "086e53a7302fd5f277ce3e3f86d34a75934f659a9facd57a14ea0cb518841ce7",
+      "outputs_sha256": "7bc8a9faddbc271d23ad790a032c80a5cfda6ad439421251474b6c43c9df3435"
+    },
+    {
+      "id": "observations-capture",
+      "status": "success",
+      "execution_count": 6,
+      "source_sha256": "5585c27f3d6e7526a1615af4768043c2a37d1ec311b9cdf2dce1d237ecf74e81",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "status-finding",
+      "status": "success",
+      "execution_count": 7,
+      "source_sha256": "2d90fae9bbc3e0c4ccf6dcc8f5520072113dae880d8557c8753b127d577eae69",
+      "outputs_sha256": "5129e1156c197239d48cd221e4ee2a179e63c96520d792f8cce4d184600dbcc7"
+    },
+    {
+      "id": "policy-sql",
+      "status": "success",
+      "execution_count": 8,
+      "source_sha256": "7e70c86eab0e2008ecd54e653c691b9466e6bd89e07c4093c60e2a4aa4b610e4",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "policy-finding",
+      "status": "success",
+      "execution_count": 9,
+      "source_sha256": "4d38dac4a718b3093af600efd241f70f489d83e818f6e9f92cd423dc552296d0",
+      "outputs_sha256": "b009a37a9a5ccd1d807de24504d5f85887e4300f04d73c99330fadf63a6ab85e"
+    },
+    {
+      "id": "checks-sql",
+      "status": "success",
+      "execution_count": 10,
+      "source_sha256": "51c5593bf39e55735dc8d2ba4450f0c77ce7fb11c97711300871c2aaffdcfefa",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "checks-finding",
+      "status": "success",
+      "execution_count": 11,
+      "source_sha256": "dff4726f0e9cea27b90057036233650a31a91ac15f3ab8a6b19a7e9529f7e4ff",
+      "outputs_sha256": "edd326ef64e4f9fc5331970ab2e6a688555f7204a9ba796f6933b9ed876d443a"
+    },
+    {
+      "id": "cleanup",
+      "status": "success",
+      "execution_count": 12,
+      "source_sha256": "3f8dbc7325485683a3aa203e83cbec131f2a517720c60946f133bd416f3683b5",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  ]
+}

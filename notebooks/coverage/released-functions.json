@@ -1,0 +1,356 @@
+{
+  "query": "SELECT * FROM duckdb_functions() WHERE database_name='eia' ORDER BY schema_name,function_name",
+  "columns": [
+    "database_name",
+    "database_oid",
+    "schema_name",
+    "function_name",
+    "alias_of",
+    "function_type",
+    "description",
+    "comment",
+    "tags",
+    "return_type",
+    "parameters",
+    "parameter_types",
+    "varargs",
+    "macro_definition",
+    "has_side_effects",
+    "internal",
+    "extension_name",
+    "function_oid",
+    "examples",
+    "stability",
+    "categories"
+  ],
+  "rows": [
+    [
+      "eia",
+      "22592",
+      "main",
+      "facet_values",
+      null,
+      "table",
+      "List a dimension's value IDs, names and aliases. This endpoint has no documented pagination; the worker validates totalFacets and fails if the bounded response is incomplete.",
+      null,
+      {
+        "vgi.category": "api",
+        "vgi.doc_llm": "List a dimension's value IDs, names and aliases. This endpoint has no documented pagination; the worker validates totalFacets and fails if the bounded response is incomplete. Returns typed columns id, name, alias. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.doc_md": "## facet_values\n\nList a dimension's value IDs, names and aliases. This endpoint has no documented pagination; the worker validates totalFacets and fails if the bounded response is incomplete. Returns typed columns id, name, alias. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.example_queries": "[{\"description\": \"Discover EIA dimension values\", \"sql\": \"SELECT id, name FROM eia.main.facet_values('electricity/retail-sales', 'sectorid') ORDER BY id\"}]",
+        "vgi.keywords": "[\"eia\", \"economics\", \"time series\", \"facet_values\"]",
+        "vgi.result_columns_schema": "[{\"name\": \"id\", \"type\": \"VARCHAR\", \"description\": \"Facet value identifier, preserving leading zeroes.\"}, {\"name\": \"name\", \"type\": \"VARCHAR\", \"description\": \"Published facet value name.\"}, {\"name\": \"alias\", \"type\": \"VARCHAR\", \"description\": \"Published facet value alias.\"}]",
+        "vgi.title": "Discover EIA dimension values"
+      },
+      null,
+      [
+        "route",
+        "facet"
+      ],
+      [
+        "VARCHAR",
+        "VARCHAR"
+      ],
+      null,
+      null,
+      null,
+      true,
+      null,
+      22596,
+      [
+        "SELECT id, name FROM eia.main.facet_values('electricity/retail-sales', 'sectorid') ORDER BY id"
+      ],
+      null,
+      []
+    ],
+    [
+      "eia",
+      "22592",
+      "main",
+      "facets",
+      null,
+      "table",
+      "List dimension identifiers accepted as facets_json keys by observations(). Use facet_values() to discover their available string identifiers.",
+      null,
+      {
+        "vgi.category": "api",
+        "vgi.doc_llm": "List dimension identifiers accepted as facets_json keys by observations(). Use facet_values() to discover their available string identifiers. Returns typed columns facet, description. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.doc_md": "## facets\n\nList dimension identifiers accepted as facets_json keys by observations(). Use facet_values() to discover their available string identifiers. Returns typed columns facet, description. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.example_queries": "[{\"description\": \"Discover EIA dimensions\", \"sql\": \"SELECT facet, description FROM eia.main.facets('electricity/retail-sales') ORDER BY facet\"}]",
+        "vgi.keywords": "[\"eia\", \"economics\", \"time series\", \"facets\"]",
+        "vgi.result_columns_schema": "[{\"name\": \"facet\", \"type\": \"VARCHAR\", \"description\": \"Dimension identifier used as a facets_json key.\"}, {\"name\": \"description\", \"type\": \"VARCHAR\", \"description\": \"Published dimension description.\"}]",
+        "vgi.title": "Discover EIA dimensions"
+      },
+      null,
+      [
+        "route"
+      ],
+      [
+        "VARCHAR"
+      ],
+      null,
+      null,
+      null,
+      true,
+      null,
+      22597,
+      [
+        "SELECT facet, description FROM eia.main.facets('electricity/retail-sales') ORDER BY facet"
+      ],
+      null,
+      []
+    ],
+    [
+      "eia",
+      "22592",
+      "main",
+      "frequencies",
+      null,
+      "table",
+      "List the selected leaf dataset's supported frequency identifiers and native period formats. Use the frequency identifier as observations()'s third argument.",
+      null,
+      {
+        "vgi.category": "api",
+        "vgi.doc_llm": "List the selected leaf dataset's supported frequency identifiers and native period formats. Use the frequency identifier as observations()'s third argument. Returns typed columns frequency, description, query_code, period_format. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.doc_md": "## frequencies\n\nList the selected leaf dataset's supported frequency identifiers and native period formats. Use the frequency identifier as observations()'s third argument. Returns typed columns frequency, description, query_code, period_format. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.example_queries": "[{\"description\": \"Discover EIA frequencies\", \"sql\": \"SELECT frequency, period_format FROM eia.main.frequencies('electricity/retail-sales') ORDER BY frequency\"}]",
+        "vgi.keywords": "[\"eia\", \"economics\", \"time series\", \"frequencies\"]",
+        "vgi.result_columns_schema": "[{\"name\": \"frequency\", \"type\": \"VARCHAR\", \"description\": \"Frequency identifier accepted by observations().\"}, {\"name\": \"description\", \"type\": \"VARCHAR\", \"description\": \"Published frequency description.\"}, {\"name\": \"query_code\", \"type\": \"VARCHAR\", \"description\": \"Legacy frequency code, when supplied.\"}, {\"name\": \"period_format\", \"type\": \"VARCHAR\", \"description\": \"Native period format advertised by EIA.\"}]",
+        "vgi.title": "Discover EIA frequencies"
+      },
+      null,
+      [
+        "route"
+      ],
+      [
+        "VARCHAR"
+      ],
+      null,
+      null,
+      null,
+      true,
+      null,
+      22598,
+      [
+        "SELECT frequency, period_format FROM eia.main.frequencies('electricity/retail-sales') ORDER BY frequency"
+      ],
+      null,
+      []
+    ],
+    [
+      "eia",
+      "22592",
+      "main",
+      "measures",
+      null,
+      "table",
+      "List numeric data columns and published units for a leaf dataset. Select one measure per observations() call to keep source row counts and output row counts identical.",
+      null,
+      {
+        "vgi.category": "api",
+        "vgi.doc_llm": "List numeric data columns and published units for a leaf dataset. Select one measure per observations() call to keep source row counts and output row counts identical. Returns typed columns measure, name, units, metadata_json. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.doc_md": "## measures\n\nList numeric data columns and published units for a leaf dataset. Select one measure per observations() call to keep source row counts and output row counts identical. Returns typed columns measure, name, units, metadata_json. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.example_queries": "[{\"description\": \"Discover EIA measures\", \"sql\": \"SELECT measure, units FROM eia.main.measures('electricity/retail-sales') ORDER BY measure\"}]",
+        "vgi.keywords": "[\"eia\", \"economics\", \"time series\", \"measures\"]",
+        "vgi.result_columns_schema": "[{\"name\": \"measure\", \"type\": \"VARCHAR\", \"description\": \"Data column identifier accepted by observations().\"}, {\"name\": \"name\", \"type\": \"VARCHAR\", \"description\": \"Published measure alias or label.\"}, {\"name\": \"units\", \"type\": \"VARCHAR\", \"description\": \"Source units; values are not rescaled.\"}, {\"name\": \"metadata_json\", \"type\": \"VARCHAR\", \"description\": \"Complete source descriptor for this measure.\"}]",
+        "vgi.title": "Discover EIA measures"
+      },
+      null,
+      [
+        "route"
+      ],
+      [
+        "VARCHAR"
+      ],
+      null,
+      null,
+      null,
+      true,
+      null,
+      22599,
+      [
+        "SELECT measure, units FROM eia.main.measures('electricity/retail-sales') ORDER BY measure"
+      ],
+      null,
+      []
+    ],
+    [
+      "eia",
+      "22592",
+      "main",
+      "metadata",
+      null,
+      "table",
+      "Return one metadata row containing source notes, period bounds and the complete response descriptor. The API request echo and its credential are excluded.",
+      null,
+      {
+        "vgi.category": "api",
+        "vgi.doc_llm": "Return one metadata row containing source notes, period bounds and the complete response descriptor. The API request echo and its credential are excluded. Returns typed columns route, name, description, start_period, end_period, default_frequency, metadata_json. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.doc_md": "## metadata\n\nReturn one metadata row containing source notes, period bounds and the complete response descriptor. The API request echo and its credential are excluded. Returns typed columns route, name, description, start_period, end_period, default_frequency, metadata_json. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.example_queries": "[{\"description\": \"Inspect EIA dataset metadata\", \"sql\": \"SELECT name, start_period, end_period FROM eia.main.metadata('electricity/retail-sales')\"}]",
+        "vgi.keywords": "[\"eia\", \"economics\", \"time series\", \"metadata\"]",
+        "vgi.result_columns_schema": "[{\"name\": \"route\", \"type\": \"VARCHAR\", \"description\": \"Requested relative metadata route.\"}, {\"name\": \"name\", \"type\": \"VARCHAR\", \"description\": \"Published dataset name.\"}, {\"name\": \"description\", \"type\": \"VARCHAR\", \"description\": \"Dataset scope and source notes.\"}, {\"name\": \"start_period\", \"type\": \"VARCHAR\", \"description\": \"Earliest native period advertised by EIA.\"}, {\"name\": \"end_period\", \"type\": \"VARCHAR\", \"description\": \"Latest native period advertised by EIA.\"}, {\"name\": \"default_frequency\", \"type\": \"VARCHAR\", \"description\": \"Default frequency advertised by the source.\"}, {\"name\": \"metadata_json\", \"type\": \"VARCHAR\", \"description\": \"Complete metadata response object; request echoes are excluded.\"}]",
+        "vgi.title": "Inspect EIA dataset metadata"
+      },
+      null,
+      [
+        "route"
+      ],
+      [
+        "VARCHAR"
+      ],
+      null,
+      null,
+      null,
+      true,
+      null,
+      22600,
+      [
+        "SELECT name, start_period, end_period FROM eia.main.metadata('electricity/retail-sales')"
+      ],
+      null,
+      []
+    ],
+    [
+      "eia",
+      "22592",
+      "main",
+      "observations",
+      null,
+      "table",
+      "Stream one measure at an explicit frequency. Required positional arguments are route, measure and frequency. All other arguments are named; their display order has no binding significance. Metadata validates filters and supplies dimension tie-breakers for stable sorting. Periods, units, missing markers and dimensions are preserved; source total changes or incomplete pages fail the query.",
+      null,
+      {
+        "vgi.category": "api",
+        "vgi.doc_llm": "Stream one measure at an explicit frequency. Required positional arguments are route, measure and frequency. All other arguments are named; their display order has no binding significance. Metadata validates filters and supplies dimension tie-breakers for stable sorting. Periods, units, missing markers and dimensions are preserved; source total changes or incomplete pages fail the query. Returns typed columns route, period, frequency, measure, value, value_text, value_status, units, dimensions_json, source_json. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.doc_md": "## observations\n\nStream one measure at an explicit frequency. Required positional arguments are route, measure and frequency. All other arguments are named; their display order has no binding significance. Metadata validates filters and supplies dimension tie-breakers for stable sorting. Periods, units, missing markers and dimensions are preserved; source total changes or incomplete pages fail the query. Returns typed columns route, period, frequency, measure, value, value_text, value_status, units, dimensions_json, source_json. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.example_queries": "[{\"description\": \"Read EIA observations\", \"sql\": \"SELECT period, value, units FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{\\\"stateid\\\":[\\\"CO\\\"],\\\"sectorid\\\":[\\\"RES\\\"]}', start_period := '2024-01', end_period := '2024-03') ORDER BY period\"}]",
+        "vgi.keywords": "[\"eia\", \"economics\", \"time series\", \"observations\"]",
+        "vgi.result_columns_schema": "[{\"name\": \"route\", \"type\": \"VARCHAR\", \"description\": \"Requested dataset route or seriesid/legacy-identifier.\"}, {\"name\": \"period\", \"type\": \"VARCHAR\", \"description\": \"Native EIA observation period; no date is inferred.\"}, {\"name\": \"frequency\", \"type\": \"VARCHAR\", \"description\": \"Frequency reported by the response.\"}, {\"name\": \"measure\", \"type\": \"VARCHAR\", \"description\": \"Selected data column or the legacy series' inferred measure.\"}, {\"name\": \"value\", \"type\": \"DOUBLE\", \"description\": \"Numeric value in published units; NULL for documented missing/suppressed markers.\"}, {\"name\": \"value_text\", \"type\": \"VARCHAR\", \"description\": \"Original string or canonical text of a legacy numeric value.\"}, {\"name\": \"value_status\", \"type\": \"VARCHAR\", \"description\": \"numeric, missing, withheld or insignificant.\"}, {\"name\": \"units\", \"type\": \"VARCHAR\", \"description\": \"Per-row source units, without rescaling.\"}, {\"name\": \"dimensions_json\", \"type\": \"VARCHAR\", \"description\": \"All dimension IDs and labels from the original row.\"}, {\"name\": \"source_json\", \"type\": \"VARCHAR\", \"description\": \"Complete source observation object.\"}]",
+        "vgi.title": "Read EIA observations"
+      },
+      null,
+      [
+        "route",
+        "measure",
+        "frequency",
+        "start_offset",
+        "max_rows",
+        "sort_direction",
+        "page_size",
+        "start_period",
+        "facets_json",
+        "end_period"
+      ],
+      [
+        "VARCHAR",
+        "VARCHAR",
+        "VARCHAR",
+        "BIGINT",
+        "BIGINT",
+        "VARCHAR",
+        "BIGINT",
+        "VARCHAR",
+        "VARCHAR",
+        "VARCHAR"
+      ],
+      null,
+      null,
+      null,
+      true,
+      null,
+      22601,
+      [
+        "SELECT period, value, units FROM eia.main.observations('electricity/retail-sales', 'price', 'monthly', facets_json := '{\"stateid\":[\"CO\"],\"sectorid\":[\"RES\"]}', start_period := '2024-01', end_period := '2024-03') ORDER BY period"
+      ],
+      null,
+      []
+    ],
+    [
+      "eia",
+      "22592",
+      "main",
+      "routes",
+      null,
+      "table",
+      "List direct children of a parent route, or the API root when route is empty. Leaf datasets return no children; inspect metadata() and measures() to query them.",
+      null,
+      {
+        "vgi.category": "api",
+        "vgi.doc_llm": "List direct children of a parent route, or the API root when route is empty. Leaf datasets return no children; inspect metadata() and measures() to query them. Returns typed columns route, id, name, description. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.doc_md": "## routes\n\nList direct children of a parent route, or the API root when route is empty. Leaf datasets return no children; inspect metadata() and measures() to query them. Returns typed columns route, id, name, description. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.example_queries": "[{\"description\": \"Discover EIA routes\", \"sql\": \"SELECT route, name FROM eia.main.routes(route := 'electricity') ORDER BY route\"}]",
+        "vgi.keywords": "[\"eia\", \"economics\", \"time series\", \"routes\"]",
+        "vgi.result_columns_schema": "[{\"name\": \"route\", \"type\": \"VARCHAR\", \"description\": \"Relative child route, suitable for further discovery.\"}, {\"name\": \"id\", \"type\": \"VARCHAR\", \"description\": \"Child route identifier.\"}, {\"name\": \"name\", \"type\": \"VARCHAR\", \"description\": \"Published route name.\"}, {\"name\": \"description\", \"type\": \"VARCHAR\", \"description\": \"Published route description.\"}]",
+        "vgi.title": "Discover EIA routes"
+      },
+      null,
+      [
+        "route"
+      ],
+      [
+        "VARCHAR"
+      ],
+      null,
+      null,
+      null,
+      true,
+      null,
+      22602,
+      [
+        "SELECT route, name FROM eia.main.routes(route := 'electricity') ORDER BY route"
+      ],
+      null,
+      []
+    ],
+    [
+      "eia",
+      "22592",
+      "main",
+      "series",
+      null,
+      "table",
+      "Translate one legacy series ID through the v2 seriesid endpoint and stream its observations. Frequency and the single measure are inferred from the response. Ambiguous measure metadata fails; use observations() for explicit selection.",
+      null,
+      {
+        "vgi.category": "api",
+        "vgi.doc_llm": "Translate one legacy series ID through the v2 seriesid endpoint and stream its observations. Frequency and the single measure are inferred from the response. Ambiguous measure metadata fails; use observations() for explicit selection. Returns typed columns route, period, frequency, measure, value, value_text, value_status, units, dimensions_json, source_json. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.doc_md": "## series\n\nTranslate one legacy series ID through the v2 seriesid endpoint and stream its observations. Frequency and the single measure are inferred from the response. Ambiguous measure metadata fails; use observations() for explicit selection. Returns typed columns route, period, frequency, measure, value, value_text, value_status, units, dimensions_json, source_json. Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations and legacy series with original dimensions and units. Use an eia_api secret with api_key or EIA_API_KEY. Discover routes and facets before querying observations. Numeric values retain published units; value_text preserves the original representation. page_size controls requests and max_rows=0 retrieves all matching rows. NULL arguments are rejected. Missing optional response fields return NULL. Upstream errors fail the query; SQL WHERE filters are local.",
+        "vgi.example_queries": "[{\"description\": \"Read a legacy EIA series\", \"sql\": \"SELECT period, value, units FROM eia.main.series('ELEC.SALES.CO-RES.A', start_period := '2022', end_period := '2024') ORDER BY period\"}]",
+        "vgi.keywords": "[\"eia\", \"economics\", \"time series\", \"series\"]",
+        "vgi.result_columns_schema": "[{\"name\": \"route\", \"type\": \"VARCHAR\", \"description\": \"Requested dataset route or seriesid/legacy-identifier.\"}, {\"name\": \"period\", \"type\": \"VARCHAR\", \"description\": \"Native EIA observation period; no date is inferred.\"}, {\"name\": \"frequency\", \"type\": \"VARCHAR\", \"description\": \"Frequency reported by the response.\"}, {\"name\": \"measure\", \"type\": \"VARCHAR\", \"description\": \"Selected data column or the legacy series' inferred measure.\"}, {\"name\": \"value\", \"type\": \"DOUBLE\", \"description\": \"Numeric value in published units; NULL for documented missing/suppressed markers.\"}, {\"name\": \"value_text\", \"type\": \"VARCHAR\", \"description\": \"Original string or canonical text of a legacy numeric value.\"}, {\"name\": \"value_status\", \"type\": \"VARCHAR\", \"description\": \"numeric, missing, withheld or insignificant.\"}, {\"name\": \"units\", \"type\": \"VARCHAR\", \"description\": \"Per-row source units, without rescaling.\"}, {\"name\": \"dimensions_json\", \"type\": \"VARCHAR\", \"description\": \"All dimension IDs and labels from the original row.\"}, {\"name\": \"source_json\", \"type\": \"VARCHAR\", \"description\": \"Complete source observation object.\"}]",
+        "vgi.title": "Read a legacy EIA series"
+      },
+      null,
+      [
+        "series_id",
+        "start_period",
+        "max_rows",
+        "start_offset",
+        "sort_direction",
+        "page_size",
+        "end_period"
+      ],
+      [
+        "VARCHAR",
+        "VARCHAR",
+        "BIGINT",
+        "BIGINT",
+        "VARCHAR",
+        "BIGINT",
+        "VARCHAR"
+      ],
+      null,
+      null,
+      null,
+      true,
+      null,
+      22603,
+      [
+        "SELECT period, value, units FROM eia.main.series('ELEC.SALES.CO-RES.A', start_period := '2022', end_period := '2024') ORDER BY period"
+      ],
+      null,
+      []
+    ]
+  ]
+}

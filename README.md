@@ -208,4 +208,4 @@ Sources: [EIA API technical documentation](https://www.eia.gov/opendata/document
 
 ## Executable notebooks
 
-[Weight monthly electricity prices by sales](notebooks/README.md) uses recorded official EIA responses, visible SQL and a controlled half-year/full-year comparison.
+[Executed EIA notebooks](notebooks/README.md) explore recorded official electricity-price weighting and separately labeled synthetic observation markers, with visible SQL and controlled parameter experiments.

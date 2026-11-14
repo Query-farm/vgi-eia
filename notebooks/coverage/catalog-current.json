@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "repository": "Query-farm/vgi-eia",
+  "revision": "a7d8d8b9bbc069bdaa03a939fcb66d771105f632",
+  "captured_at": "2026-11-14T23:23:53.057660+00:00",
+  "default_schema": "main",
+  "scope": "all_public_functions_and_tables",
+  "complete": true,
+  "evidence": [
+    {
+      "path": "coverage/current-functions.json",
+      "sha256": "f3c0224db356d28246d6c7bdbaf29a4585c9db2b3b99a52db00e7408ccd11e49",
+      "description": "Complete worker-filtered functions export through actual published Haybarn"
+    },
+    {
+      "path": "coverage/current-tables.json",
+      "sha256": "7c378a4ad8346ff234ab1b40641128bca353f0b7d5ac1446ca89b00ff2e8f547",
+      "description": "Complete worker-filtered tables export through actual published Haybarn"
+    },
+    {
+      "path": "coverage/current-views.json",
+      "sha256": "91fe5e8c0d6dc4071eefb1b9d126d21278166fabf191f699cf9df5863c7a741b",
+      "description": "Complete worker-filtered views export through actual published Haybarn"
+    }
+  ],
+  "objects": [
+    {
+      "schema": "main",
+      "name": "facet_values",
+      "kind": "function",
+      "signatures": [
+        "facet_values(VARCHAR, VARCHAR)"
+      ],
+      "authentication": "required",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "facets",
+      "kind": "function",
+      "signatures": [
+        "facets(VARCHAR)"
+      ],
+      "authentication": "required",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "frequencies",
+      "kind": "function",
+      "signatures": [
+        "frequencies(VARCHAR)"
+      ],
+      "authentication": "required",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "measures",
+      "kind": "function",
+      "signatures": [
+        "measures(VARCHAR)"
+      ],
+      "authentication": "required",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "metadata",
+      "kind": "function",
+      "signatures": [
+        "metadata(VARCHAR)"
+      ],
+      "authentication": "required",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "observations",
+      "kind": "function",
+      "signatures": [
+        "observations(VARCHAR, VARCHAR, VARCHAR, BIGINT, BIGINT, VARCHAR, BIGINT, VARCHAR, VARCHAR, VARCHAR)"
+      ],
+      "authentication": "required",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "routes",
+      "kind": "function",
+      "signatures": [
+        "routes(VARCHAR)"
+      ],
+      "authentication": "required",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "series",
+      "kind": "function",
+      "signatures": [
+        "series(VARCHAR, VARCHAR, BIGINT, BIGINT, VARCHAR, BIGINT, VARCHAR)"
+      ],
+      "authentication": "required",
+      "access": "read"
+    }
+  ]
+}
