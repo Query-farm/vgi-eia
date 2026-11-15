@@ -7,6 +7,8 @@
   documentation and where to get an API key (VGI183).
 - The `main` schema comment is now a short one-line summary, so the schema's
   `vgi.doc_md` adds detail instead of repeating it (VGI102).
+- The catalog's executable example now calls the worker instead of only
+  querying DuckDB's own catalog (`duckdb_functions()`): `SELECT * FROM eia.main.routes(route := 'electricity') LIMIT 0` shows the columns without an API key or EIA request.
 
 ## 0.1.1 (unreleased)
 

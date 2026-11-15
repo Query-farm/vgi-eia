@@ -119,13 +119,13 @@ CATALOG_TAGS = {
     "vgi.executable_examples": json.dumps(
         [
             {
-                "name": "discover_routes",
-                "description": "Discover available functions without credentials or API requests",
-                "sql": (
-                    "SELECT function_name FROM duckdb_functions() WHERE database_name = 'eia' AND "
-                    "function_name = 'routes' ORDER BY function_name"
+                "name": "routes_columns",
+                "description": (
+                    "Show the columns routes() returns without an API key: binding the "
+                    "function with LIMIT 0 resolves its schema and makes no EIA API request"
                 ),
-                "expected_result": [{"function_name": "routes"}],
+                "sql": "SELECT * FROM eia.main.routes(route := 'electricity') LIMIT 0",
+                "expected_result": [],
             }
         ]
     ),
