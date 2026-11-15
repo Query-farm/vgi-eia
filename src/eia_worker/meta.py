@@ -75,6 +75,12 @@ CATALOG_DOC_LLM = (
     "rows. NULL arguments are rejected. Missing optional response fields return NULL. "
     "Upstream errors fail the query; SQL WHERE filters are local."
 )
+CATALOG_SOURCES_MD = (
+    "\n\n## Sources and references\n\n"
+    "- [EIA Open Data](https://www.eia.gov/opendata/)\n"
+    "- [EIA API v2 documentation](https://www.eia.gov/opendata/documentation.php)\n"
+    "- [Register for a free EIA API key](https://www.eia.gov/opendata/register.php)"
+)
 CATALOG_DOC_MD = (
     "# vgi-eia\n\n"
     + CATALOG_DOC_LLM
@@ -82,7 +88,9 @@ CATALOG_DOC_MD = (
         "\n\nQueries use bounded HTTP responses and retries. Credentials stay out of "
         "continuation state. See README.md for deployment and operational limits."
     )
+    + CATALOG_SOURCES_MD
 )
+SCHEMA_COMMENT = "EIA API v2 as table functions: route, facet and frequency discovery plus energy observations."
 SCHEMA_DOC_LLM = CATALOG_DOC_LLM
 SCHEMA_DOC_MD = (
     "## main\n\n"

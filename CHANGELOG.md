@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 (unreleased)
+
+- Docs link to EIA Open Data (API v2): the catalog documentation now ends with a
+  "Sources and references" section linking the upstream service, its API
+  documentation and where to get an API key (VGI183).
+- The `main` schema comment is now a short one-line summary, so the schema's
+  `vgi.doc_md` adds detail instead of repeating it (VGI102).
+
 ## 0.1.1 (unreleased)
 
 - The catalog comment (the one-line description directories show, VGI001) is now
