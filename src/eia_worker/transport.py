@@ -149,7 +149,7 @@ def request_json(
     request = urllib.request.Request(
         url,
         data=json.dumps(payload, allow_nan=False).encode() if payload is not None else None,
-        headers={"Accept": "application/json", "Content-Type": "application/json", "User-Agent": "vgi-eia/0.1.0"},
+        headers={"Accept": "application/json", "Content-Type": "application/json", "User-Agent": "vgi-eia/0.1.1"},
     )
     opener = urllib.request.build_opener(_NoRedirect())
     deadline = time.monotonic() + config.retry_budget

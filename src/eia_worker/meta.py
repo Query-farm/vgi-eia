@@ -58,6 +58,14 @@ def column(name: str, type_: pa.DataType, comment: str, *, nullable: bool = True
     return pa.field(name, type_, nullable=nullable, metadata={b"comment": comment.encode()})
 
 
+# The catalog comment is the worker's one-line directory description (VGI001):
+# plain text, one paragraph, at most 300 characters. Long-form docs live in
+# vgi.doc_md and agent guidance in vgi.doc_llm.
+CATALOG_COMMENT = (
+    "US Energy Information Administration energy data from EIA API v2, covering "
+    "electricity, petroleum, natural gas, coal and renewables, as SQL tables with "
+    "route and facet discovery and the original units. Needs a free EIA API key."
+)
 CATALOG_DOC_LLM = (
     "Explore EIA API v2 routes, facets and frequencies, then retrieve energy observations "
     "and legacy series with original dimensions and units. Use an eia_api secret with "

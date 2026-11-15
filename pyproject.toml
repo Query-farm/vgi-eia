@@ -1,6 +1,6 @@
 [project]
 name = "vgi-eia-worker"
-version = "0.1.0"
+version = "0.1.1"
 description = "Energy Information Administration data through typed VGI SQL functions."
 readme = "README.md"
 license = "0BSD"
