@@ -6,7 +6,7 @@ or retrieve a legacy series ID through EIA's v2 translation endpoint.
 
 ## Install and query
 
-Requires Python 3.13 or newer. Install a GitHub Release wheel, or run `make build`
+Requires Python 3.14 or newer. Install a GitHub Release wheel, or run `make build`
 in the locked source checkout. [Register for an EIA API key](https://www.eia.gov/opendata/)
 and inject it as `EIA_API_KEY` in the worker environment or as a SQL secret.
 Environment files are not loaded automatically. Never commit actual credentials.
@@ -190,7 +190,7 @@ make check          # Ruff, strict mypy, pydoclint, pytest, SQL transports, meta
 make smoke-live     # Official API using EIA_API_KEY; consumes its quota
 make package
 uvx twine check dist/*
-python3 ci/verify-artifacts.py --python 3.13
+python3 ci/verify-artifacts.py --python 3.14
 make lint-ai        # Optional external-agent metadata evaluation
 ```
 

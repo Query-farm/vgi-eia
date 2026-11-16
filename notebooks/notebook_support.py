@@ -25,7 +25,9 @@ MANAGED = (
 
 def configure(end_month: int, mode: str):
     if type(end_month) is not int or not 1 <= end_month <= 12:
-        raise ValueError("END_MONTH must be an integer from 1 through 12, within the fixed 2024 window")
+        raise ValueError(
+            "END_MONTH must be an integer from 1 through 12, within the fixed 2024 window"
+        )
     if mode not in ("recorded", "live"):
         raise ValueError("DATA_MODE must be 'recorded' or 'live'")
     return _source(mode)

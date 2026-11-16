@@ -97,7 +97,7 @@ def facets_json(value: str) -> dict[str, list[str]]:
             if len(set(items)) != len(items):
                 raise ValueError
         return parsed
-    except (ValueError, TypeError, RecursionError):
+    except ValueError, TypeError, RecursionError:
         raise ApiError(
             "facets_json must be an object of unique facet names and nonempty unique string arrays"
         ) from None
@@ -137,5 +137,5 @@ def source_json(value: Any) -> str:
     """Serialize response fields without allowing non-finite JSON values."""
     try:
         return json.dumps(value, sort_keys=True, ensure_ascii=False, allow_nan=False)
-    except (ValueError, TypeError, OverflowError):
+    except ValueError, TypeError, OverflowError:
         raise ApiError("EIA response contains invalid JSON values") from None

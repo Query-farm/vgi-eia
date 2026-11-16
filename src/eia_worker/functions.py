@@ -426,7 +426,7 @@ class EiaFunction[T: RootArgs | RouteArgs | PageArgs](TableFunctionGenerator[T, 
         rows = cls.fetch(params.args, state, credential(params))
         try:
             batch = pa.RecordBatch.from_pylist(rows, schema=params.output_schema)
-        except (pa.ArrowException, ValueError, OverflowError):
+        except pa.ArrowException, ValueError, OverflowError:
             raise ApiError("EIA response cannot be represented by the declared schema") from None
         if not isinstance(params.args, PageArgs):
             state.done = True
