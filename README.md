@@ -4,6 +4,8 @@ Query US Energy Information Administration data from DuckDB through a Python VGI
 worker. Explore API v2 routes, frequencies and facets, then stream observations
 or retrieve a legacy series ID through EIA's v2 translation endpoint.
 
+vgi-eia 0.2.0 speaks VGI protocol 3.4, so it needs Haybarn 2.0.1 or newer (Haybarn 2.0.0 loads a 3.3 `vgi` extension that cannot attach it).
+
 ## Install and query
 
 Requires Python 3.14 or newer. Install a GitHub Release wheel, or run `make build`
